@@ -15,6 +15,7 @@ function Header(props) {
 function Card() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchedCity, setSearchedCity] = useState('What city are you looking for?')
+  const [weatherData, setWeatherData] = useState(null)
 
   function handleQueryChange(e) {
     setSearchQuery(e.target.value)
@@ -28,13 +29,14 @@ function Card() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        setWeatherData(data);
       });
   }
 
   return (
     <main className='flex flex-col gap-10 items-center justify-around mt-20 mb-20'>
       <SearchBar handleQueryChange={handleQueryChange} handleAPI={handleAPI} />
-      <WeatherInfo cityName={searchedCity} />
+      <WeatherInfo cityName={searchedCity} weatherData={weatherData} />
     </main>
   )
 }
@@ -58,14 +60,17 @@ function SearchBar({ handleQueryChange, handleAPI }) {
   )
 }
 
-function WeatherInfo({ cityName  }) {
+function WeatherInfo({ cityName, weatherData  }) {
   return (
-    <main>
-      <div className=" bg-white rounded-lg shadow-lg p-4">
+   
+      <div className=" bg-white rounded-lg shadow-lg p-4 grid">
         <h2 className="text-2xl font-bold">{cityName}</h2>
-        
+        <h2>
+          {weatherData && `Temperature is ${weatherData.current.temp_c}°C`}
+        </h2>
+        <h2>{weatherData && `${weatherData.current.condition.text}`}</h2>
       </div>
-    </main>
+  
   )
 }
 
