@@ -16,23 +16,30 @@ function Card() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchedCity, setSearchedCity] = useState('What city are you looking for?')
 
-function handleQueryChange(e) {
-  setSearchQuery(e.target.value)
-}
+  function handleQueryChange(e) {
+    setSearchQuery(e.target.value)
+  }
 
-function handleCityChange() {
-setSearchedCity(searchQuery)
-}
+  async function handleAPI() {
+    setSearchedCity(searchQuery);
+    const apiKey = 'ae58c9330c1448dda6f194716240301';
+    const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${searchQuery}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  }
 
   return (
-    <main className='flex flex-col gap-10'>
-      <SearchBar handleQueryChange = {handleQueryChange} handleCityChange = {handleCityChange} />
+    <main className='flex flex-col gap-10 items-center justify-around mt-20 mb-20'>
+      <SearchBar handleQueryChange={handleQueryChange} handleAPI={handleAPI} />
       <WeatherInfo cityName={searchedCity} />
     </main>
   )
 }
 
-function SearchBar({handleQueryChange, handleCityChange}) {
+function SearchBar({ handleQueryChange, handleAPI }) {
   return (
     <div>
       <input
@@ -42,7 +49,7 @@ function SearchBar({handleQueryChange, handleCityChange}) {
         className="w-1/2 h-12 rounded-lg p-4"
       />
       <button
-        onClick={handleCityChange}
+        onClick={handleAPI}
         className="bg-blue-500 text-white font-bold rounded-lg p-4"
       >
         Search
@@ -54,7 +61,7 @@ function SearchBar({handleQueryChange, handleCityChange}) {
 function WeatherInfo({ cityName  }) {
   return (
     <main>
-      <div className="w-1/2 h-1/2 bg-white rounded-lg shadow-lg p-4">
+      <div className=" bg-white rounded-lg shadow-lg p-4">
         <h2 className="text-2xl font-bold">{cityName}</h2>
         
       </div>
