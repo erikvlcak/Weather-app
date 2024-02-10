@@ -1,47 +1,62 @@
 /* eslint-disable react/prop-types */
 
-import { useState } from "react"
+import { useState } from 'react'
 
 function Header(props) {
-    return(
-        <header className={`w-full h-16 flex justify-center items-center ${props.bg} text-white font-bold text-xl`}>
-            <h1>WEATHER AROUND THE GLOBE</h1>
-        </header>
-    )
+  return (
+    <header
+      className={`w-full h-16 flex justify-center items-center ${props.bg} text-white font-bold text-xl`}
+    >
+      <h1>WEATHER AROUND THE GLOBE</h1>
+    </header>
+  )
 }
 
 function Card() {
-  const [query, setQuery] = useState('')
-  const [search, setSeach] = useState('What city are you looking for?')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchedCity, setSearchedCity] = useState('What city are you looking for?')
+
+function handleQueryChange(e) {
+  setSearchQuery(e.target.value)
+}
+
+function handleCityChange() {
+setSearchedCity(searchQuery)
+}
 
   return (
-    <main>
+    <main className='flex flex-col gap-10'>
+      <SearchBar handleQueryChange = {handleQueryChange} handleCityChange = {handleCityChange} />
+      <WeatherInfo cityName={searchedCity} />
+    </main>
+  )
+}
+
+function SearchBar({handleQueryChange, handleCityChange}) {
+  return (
+    <div>
       <input
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={handleQueryChange}
         type="text"
         placeholder="Search for a city"
         className="w-1/2 h-12 rounded-lg p-4"
       />
       <button
-        onClick={() => setSeach(query)}
+        onClick={handleCityChange}
         className="bg-blue-500 text-white font-bold rounded-lg p-4"
       >
         Search
       </button>
-      <Info cityName={search} />
-    </main>
+    </div>
   )
 }
 
-function Info(props) {
+function WeatherInfo({ cityName  }) {
   return (
     <main>
       <div className="w-1/2 h-1/2 bg-white rounded-lg shadow-lg p-4">
-        <h2 className="text-2xl font-bold">{props.cityName}</h2>
-        <p>Weather: </p>
-        <p>Temperature: </p>
-        <p>Wind: </p>
-        <p>Humidity: </p>
+        <h2 className="text-2xl font-bold">{cityName}</h2>
+        
       </div>
     </main>
   )
@@ -58,17 +73,14 @@ function Footer() {
   )
 }
 
-
-
 export default function App() {
+  const [backgroundColor, setBackgroundColor] = useState('bg-gray-500')
 
-    const [backgroundColor, setBackgroundColor] = useState('bg-gray-500')
-
-return(
+  return (
     <div className="flex flex-col items-center justify-between">
-        <Header bg = {backgroundColor} />
-        <Card />
-        <Footer/>
+      <Header bg={backgroundColor} />
+      <Card />
+      <Footer />
     </div>
-)
+  )
 }
