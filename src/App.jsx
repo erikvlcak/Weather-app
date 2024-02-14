@@ -1,6 +1,10 @@
 /* eslint-disable react/prop-types */
 
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
+import {Popover, Transition } from '@headlessui/react'
+import {
+  ChevronDownIcon,
+} from '@heroicons/react/20/solid'
 
 function Header(props) {
   return (
@@ -72,7 +76,6 @@ function SearchBar({ handleQueryChange, handleAPI }) {
 }
 
 function WeatherInfo({ cityName, weatherData }) {
-
   const [tabs, setTabs] = useState([
     {
       name: 'Today',
@@ -88,22 +91,12 @@ function WeatherInfo({ cityName, weatherData }) {
     },
   ])
 
-
-
   function formatDate(inputDate) {
- 
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
-
-
     const options = { weekday: 'long', day: 'numeric', month: 'numeric' }
-
-
     const formatter = new Intl.DateTimeFormat('en-US', options)
-
-
     const parts = formatter.formatToParts(parsedDate)
     const formattedDate = `${parts[0].value} ${parts[4].value}.${parts[2].value}.`
-
     return formattedDate
   }
 
@@ -127,70 +120,99 @@ function WeatherInfo({ cityName, weatherData }) {
     <div>
       {weatherData ? (
         <div>
-          <div className=" bg-white rounded-lg shadow-lg grid border-4 p-10">
+          <div className=" bg-white rounded-lg shadow-lg border-4 p-10 w-[100%]">
             <h2 className="text-2xl font-bold">{cityName}</h2>
             <h2>
               {weatherData && `Temperature is ${weatherData.current.temp_c}°C`}
             </h2>
             <h2>{weatherData && `${weatherData.current.condition.text}`}</h2>
           </div>
-          <button className="rounded-md bg-indigo-600 px-3.5 py-2.5 w-full text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Show more information
-          </button>
 
-          <div>
-            <div className="sm:hidden">
-              <label htmlFor="tabs" className="sr-only">
-                Select a tab
-              </label>
-              <select
-                id="tabs"
-                name="tabs"
-                className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                defaultValue={tabs.find((tab) => tab.current).name}
-              >
-                {tabs.map((tab) => (
-                  <option key={tab.name}>{tab.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="hidden sm:block">
-              <nav
-                className="isolate flex divide-x divide-gray-200 rounded-lg shadow cursor-pointer"
-                aria-label="Tabs"
-              >
-                {tabs.map((tab, tabIdx) => (
-                  tab.name = formatDate(weatherData.forecast.forecastday[tabIdx].date),
-                  <a
-                    key={tab.name}
-                    href={tab.href}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleTabChange(tabIdx)
-                    }}
-                    className={classNames(
-                      tab.current
-                        ? 'text-gray-900'
-                        : 'text-gray-500 hover:text-gray-700',
-                      tabIdx === 0 ? 'rounded-l-lg' : '',
-                      tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-                      'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10'
-                    )}
-                    aria-current={tab.current ? 'page' : undefined}
-                  >
-                    <span>{tab.name}</span>
-                    <span
-                      aria-hidden="true"
-                      className={classNames(
-                        tab.current ? 'bg-indigo-500' : 'bg-transparent',
-                        'absolute inset-x-0 bottom-0 h-0.5'
+          <Popover className="relative">
+            <Popover.Button className="rounded-md w-full bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Display forecast
+              <ChevronDownIcon
+                className="h-5 w-5 flex-none text-gray-400"
+                aria-hidden="true"
+              />
+            </Popover.Button>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-96 rounded-3xl bg-white p-4 shadow-lg ring-1 ring-gray-900/5">
+                <div>
+                  <div className="sm:hidden">
+                    <label htmlFor="tabs" className="sr-only">
+                      Select a tab
+                    </label>
+                    <select
+                      id="tabs"
+                      name="tabs"
+                      className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                      defaultValue={tabs.find((tab) => tab.current).name}
+                    >
+                      {tabs.map((tab) => (
+                        <option key={tab.name}>{tab.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="hidden sm:block">
+                    <nav
+                      className="isolate flex divide-x divide-gray-200 rounded-lg shadow cursor-pointer"
+                      aria-label="Tabs"
+                    >
+                      {tabs.map(
+                        (tab, tabIdx) => (
+                          (tab.name = formatDate(
+                            weatherData.forecast.forecastday[tabIdx].date
+                          )),
+                          (
+                            <a
+                              key={tab.name}
+                              href={tab.href}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                handleTabChange(tabIdx)
+                              }}
+                              className={classNames(
+                                tab.current
+                                  ? 'text-gray-900'
+                                  : 'text-gray-500 hover:text-gray-700',
+                                tabIdx === 0 ? 'rounded-l-lg' : '',
+                                tabIdx === tabs.length - 1
+                                  ? 'rounded-r-lg'
+                                  : '',
+                                'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10'
+                              )}
+                              aria-current={tab.current ? 'page' : undefined}
+                            >
+                              <span>{tab.name}</span>
+                              <span
+                                aria-hidden="true"
+                                className={classNames(
+                                  tab.current
+                                    ? 'bg-indigo-500'
+                                    : 'bg-transparent',
+                                  'absolute inset-x-0 bottom-0 h-0.5'
+                                )}
+                              />
+                            </a>
+                          )
+                        )
                       )}
-                    />
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
+                    </nav>
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </Popover>
         </div>
       ) : (
         ''
