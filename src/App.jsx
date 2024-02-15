@@ -20,6 +20,7 @@ function Header(props) {
 
 function Card() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [suggestionsList, setSuggestionsList] = useState([])
   const [searchedCity, setSearchedCity] = useState(
     'What city are you looking for?'
   )
@@ -39,12 +40,10 @@ function Card() {
         console.log(data)
         setWeatherData(data)
       })
-  
-
   }
 
   async function handleCityAPI() {
-  let cityName = 'Pra'
+  let cityName = searchQuery // city name from input
   fetch(`https://api.api-ninjas.com/v1/city?name=${cityName}&limit=30`, {
     method: 'GET',
     headers: {
@@ -52,9 +51,10 @@ function Card() {
       'Content-Type': 'application/json',
     },
   })
-    .then((response) => response.json())
-    .then((result) => {
-      console.log(result)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data)
+      setSuggestionsList(data)
     })
     .catch((error) => {
       console.error('Error: ', error)
@@ -63,7 +63,7 @@ function Card() {
   }
   return (
     <main className="flex flex-col gap-10 items-center justify-around mt-20 mb-20">
-      <SearchBar handleQueryChange={handleQueryChange} handleAPI={handleWeatherAPI} />
+      <SearchBar handleQueryChange={handleQueryChange} getWeatherData={handleWeatherAPI} getCitySuggestions = {handleCityAPI} />
       <WeatherInfo cityName={searchedCity} weatherData={weatherData} />
     </main>
   )}
@@ -143,7 +143,7 @@ const renderSuggestion = (suggestion) => <div>{suggestion.text}</div>
   )
 }
 
-function SearchBar({ handleQueryChange, handleAPI }) {
+function SearchBar({ handleQueryChange, getWeatherData, getCitySuggestions }) {
 
   return (
     <div>
@@ -162,7 +162,12 @@ function SearchBar({ handleQueryChange, handleAPI }) {
       />
 
       <button
-        onClick={handleAPI}
+        onClick={() => {
+        getWeatherData();
+        getCitySuggestions(); // get city suggestions - only for testing purposes
+        }
+
+        }
         type="button"
         className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
@@ -171,6 +176,8 @@ function SearchBar({ handleQueryChange, handleAPI }) {
     </div>
   )
 }
+
+
 
 function WeatherInfo({ cityName, weatherData }) {
   const [tabs, setTabs] = useState([
