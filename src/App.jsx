@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
 
 import { useState, Fragment } from 'react'
+import Autosuggest from 'react-autosuggest'
 import {Popover, Transition } from '@headlessui/react'
 import {
   ChevronDownIcon,
 } from '@heroicons/react/20/solid'
+
 
 function Header(props) {
   return (
@@ -27,7 +29,7 @@ function Card() {
     setSearchQuery(e.target.value)
   }
 
-  async function handleAPI() {
+  async function handleWeatherAPI() {
     setSearchedCity(searchQuery)
     const apiKey = 'ae58c9330c1448dda6f194716240301'
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${searchQuery}&days=3`
@@ -37,17 +39,112 @@ function Card() {
         console.log(data)
         setWeatherData(data)
       })
+  
+
+  }
+
+  async function handleCityAPI() {
+  let cityName = 'Pra'
+  fetch(`https://api.api-ninjas.com/v1/city?name=${cityName}&limit=30`, {
+    method: 'GET',
+    headers: {
+      'X-Api-Key': 'oemfcIRT5PpPRlc1wOAMww==VvylUhM8Rl1Wz2WR',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => {
+      console.error('Error: ', error)
+    })
+
+  }
+  return (
+    <main className="flex flex-col gap-10 items-center justify-around mt-20 mb-20">
+      <SearchBar handleQueryChange={handleQueryChange} handleAPI={handleWeatherAPI} />
+      <WeatherInfo cityName={searchedCity} weatherData={weatherData} />
+    </main>
+  )}
+
+
+
+
+
+ const fruits = [
+   {
+     text: 'Apple',
+   },
+   {
+     text: 'Apricot',
+   },
+   {
+     text: 'Avocado',
+   },
+   {
+     text: 'Açaí',
+   },
+   {
+     text: 'Akee',
+   },
+   {
+     text: 'Alfalfa',
+   },
+ ]
+  
+
+function Example() {
+  const [value, setValue] = useState('')
+  const [suggestions, setSuggestions] = useState([])
+
+const getSuggestions = (value) => {
+  const inputValue = value.trim().toLowerCase()
+  const inputLength = inputValue.length
+
+  return inputLength === 0
+    ? []
+    : fruits.filter(
+        (lang) => lang.text.toLowerCase().slice(0, inputLength) === inputValue
+      )
+}
+
+const getSuggestionValue = (suggestion) => suggestion.text
+
+const renderSuggestion = (suggestion) => <div>{suggestion.text}</div>
+
+  const onChange = (event, { newValue }) => {
+    setValue(newValue)
+  }
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestions(getSuggestions(value))
+  }
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([])
+  }
+
+  const inputProps = {
+    placeholder: 'Name a fruit',
+    value,
+    onChange: onChange,
   }
 
   return (
-    <main className="flex flex-col gap-10 items-center justify-around mt-20 mb-20">
-      <SearchBar handleQueryChange={handleQueryChange} handleAPI={handleAPI} />
-      <WeatherInfo cityName={searchedCity} weatherData={weatherData} />
-    </main>
+    <Autosuggest
+      suggestions={suggestions}
+      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+      onSuggestionsClearRequested={onSuggestionsClearRequested}
+      getSuggestionValue={getSuggestionValue}
+      renderSuggestion={renderSuggestion}
+      inputProps={inputProps}
+    />
   )
 }
 
 function SearchBar({ handleQueryChange, handleAPI }) {
+
   return (
     <div>
       <label htmlFor="search-city" className="sr-only">
@@ -237,6 +334,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center justify-between">
+      <Example/>
       <Header bg={backgroundColor} />
       <Card />
       <Footer />
