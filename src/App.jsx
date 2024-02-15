@@ -337,7 +337,7 @@ function Footer() {
 }
 
 export default function App() {
-  const [backgroundColor, setBackgroundColor] = useState('bg-gray-500')
+  const backgroundColor = 'bg-gray-500'
 
   return (
     <div className="flex flex-col items-center justify-between">
