@@ -111,7 +111,7 @@ function SearchBar({
     <div className="flex flex-col gap-10">
       <Combobox as="div" value={selectedCity} onChange={setSelectedCity}>
         <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
-          Assigned to
+          What&apos;s the weather like in...
         </Combobox.Label>
         <div className="relative mt-2">
           <Combobox.Input
