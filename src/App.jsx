@@ -58,6 +58,7 @@ function Card() {
       })
       .then((data) => {
         
+      
         
         setSuggestionsList(extractCityNames(data))
         console.log(suggestionsList)
@@ -69,7 +70,7 @@ function Card() {
 }
   
   return (
-    <main className="flex flex-col gap-10 w-[30%] mt-20 mb-20">
+    <main className="flex flex-row gap-10 w-[50%] mt-20 mb-20">
       <SearchBar
         query={searchQuery}
         setQuery={(value) => setSearchQuery(value)}
@@ -109,7 +110,11 @@ function SearchBar({
 
   return (
     <div className="flex flex-col gap-10">
-      <Combobox as="div" value={selectedCity} onChange={setSelectedCity}>
+      <Combobox
+        as="div"
+        value={query.length > 0 ? selectedCity : ''}
+        onChange={setSelectedCity}
+      >
         <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
           What&apos;s the weather like in...
         </Combobox.Label>
@@ -132,9 +137,9 @@ function SearchBar({
 
           {filteredCities.length > 0 && (
             <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {filteredCities.map((city) => (
+              {filteredCities.map((city, index) => (
                 <Combobox.Option
-                  key={crypto.randomUUID()}
+                  key={`${city}-${index}`}
                   value={city}
                   className={({ active }) =>
                     classNames(
@@ -358,7 +363,7 @@ export default function App() {
   const backgroundColor = 'bg-gray-500'
 
   return (
-    <div className="flex flex-col items-center justify-between">
+    <div className="flex flex-col h-[100vh] w-[100vw] items-center justify-between">
       <Header bg={backgroundColor} />
       <Card />
       <Footer />
