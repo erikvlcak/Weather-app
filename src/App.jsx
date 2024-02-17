@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 
 import { useState, Fragment } from 'react'
-import Autosuggest from 'react-autosuggest'
-import {Popover, Transition } from '@headlessui/react'
+import { Popover, Transition, Combobox } from '@headlessui/react'
 import {
+  CheckIcon,
+  ChevronUpDownIcon,
   ChevronDownIcon,
 } from '@heroicons/react/20/solid'
-
 
 function Header(props) {
   return (
@@ -21,17 +21,11 @@ function Header(props) {
 function Card() {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestionsList, setSuggestionsList] = useState([])
-  const [searchedCity, setSearchedCity] = useState(
-    'What city are you looking for?'
-  )
   const [weatherData, setWeatherData] = useState(null)
-
-  function handleQueryChange(e) {
-    setSearchQuery(e.target.value)
-  }
+  const [selectedCity, setSelectedCity] = useState('')
+  const [displayedCity, setDisplayedCity] = useState('')
 
   async function handleWeatherAPI() {
-    setSearchedCity(searchQuery)
     const apiKey = 'ae58c9330c1448dda6f194716240301'
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${searchQuery}&days=3`
     fetch(url)
@@ -42,142 +36,162 @@ function Card() {
       })
   }
 
+  function extractCityNames(data) {
+    let cityNames = []
+    for (let i = 0; i < data.results.length; i++) {
+      cityNames.push(data.results[i].name)
+    }
+    return cityNames
+  }
+
   async function handleCityAPI() {
-  let cityName = searchQuery // city name from input
-  fetch(`https://api.api-ninjas.com/v1/city?name=${cityName}&limit=30`, {
-    method: 'GET',
-    headers: {
-      'X-Api-Key': 'oemfcIRT5PpPRlc1wOAMww==VvylUhM8Rl1Wz2WR',
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data)
-      setSuggestionsList(data)
-    })
-    .catch((error) => {
-      console.error('Error: ', error)
-    })
+    
+   
+    const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=name%2C%20country&where=%22${searchQuery}%22&limit=20`
 
-  }
-  return (
-    <main className="flex flex-col gap-10 items-center justify-around mt-20 mb-20">
-      <SearchBar handleQueryChange={handleQueryChange} getWeatherData={handleWeatherAPI} getCitySuggestions = {handleCityAPI} />
-      <WeatherInfo cityName={searchedCity} weatherData={weatherData} />
-    </main>
-  )}
-
-
-
-
-
- const fruits = [
-   {
-     text: 'Apple',
-   },
-   {
-     text: 'Apricot',
-   },
-   {
-     text: 'Avocado',
-   },
-   {
-     text: 'Açaí',
-   },
-   {
-     text: 'Akee',
-   },
-   {
-     text: 'Alfalfa',
-   },
- ]
-  
-
-function Example() {
-  const [value, setValue] = useState('')
-  const [suggestions, setSuggestions] = useState([])
-
-const getSuggestions = (value) => {
-  const inputValue = value.trim().toLowerCase()
-  const inputLength = inputValue.length
-
-  return inputLength === 0
-    ? []
-    : fruits.filter(
-        (lang) => lang.text.toLowerCase().slice(0, inputLength) === inputValue
-      )
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`)
+        }
+        return response.json()
+      })
+      .then((data) => {
+        
+        
+        setSuggestionsList(extractCityNames(data))
+        console.log(suggestionsList)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+      
 }
-
-const getSuggestionValue = (suggestion) => suggestion.text
-
-const renderSuggestion = (suggestion) => <div>{suggestion.text}</div>
-
-  const onChange = (event, { newValue }) => {
-    setValue(newValue)
-  }
-
-  const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getSuggestions(value))
-  }
-
-  const onSuggestionsClearRequested = () => {
-    setSuggestions([])
-  }
-
-  const inputProps = {
-    placeholder: 'Name a fruit',
-    value,
-    onChange: onChange,
-  }
-
+  
   return (
-    <Autosuggest
-      suggestions={suggestions}
-      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-      onSuggestionsClearRequested={onSuggestionsClearRequested}
-      getSuggestionValue={getSuggestionValue}
-      renderSuggestion={renderSuggestion}
-      inputProps={inputProps}
-    />
+    <main className="flex flex-col gap-10 w-[30%] mt-20 mb-20">
+      <SearchBar
+        query={searchQuery}
+        setQuery={(value) => setSearchQuery(value)}
+        suggestions={suggestionsList}
+        refreshSuggestions={handleCityAPI}
+        getWeatherData={handleWeatherAPI}
+        selectedCity={selectedCity}
+        setSelectedCity={setSelectedCity}
+      />
+      <SearchButton getWeatherData={handleWeatherAPI} setDisplayedCity={setDisplayedCity} selectedCity = {selectedCity} showCityAPI = {handleCityAPI} />
+      <WeatherInfo cityName={displayedCity} weatherData={weatherData} />
+    </main>
   )
 }
 
-function SearchBar({ handleQueryChange, getWeatherData, getCitySuggestions }) {
+function SearchBar({
+  query,
+  setQuery,
+  suggestions,
+  refreshSuggestions,
+  selectedCity,
+  setSelectedCity
+}) {
+
+
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+  }
+
+
+  const filteredCities =
+    query === ''
+      ? suggestions
+      : suggestions.filter((suggestion) => {
+          return suggestion.toLowerCase().includes(query.toLowerCase())
+        })
 
   return (
-    <div>
-      <label htmlFor="search-city" className="sr-only">
-        Search city
-      </label>
-      <input
-        onChange={handleQueryChange}
-        id="search-city"
-        name="search-city"
-        type="search"
-        autoComplete="city"
-        required
-        className="min-w-0 mr-8 flex-auto rounded-md border-0 px-3.5 py-2 text font-bold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        placeholder="Enter city name"
-      />
+    <div className="flex flex-col gap-10">
+      <Combobox as="div" value={selectedCity} onChange={setSelectedCity}>
+        <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
+          Assigned to
+        </Combobox.Label>
+        <div className="relative mt-2">
+          <Combobox.Input
+            className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            onChange={(event) => {
+              setQuery(event.target.value)
+              refreshSuggestions()
+            }}
+            displayValue={(selectedCity) => selectedCity}
+            onBlur={() => refreshSuggestions()}
+          />
+          <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
+            <ChevronUpDownIcon
+              className="h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
+          </Combobox.Button>
 
-      <button
-        onClick={() => {
-        getWeatherData();
-        getCitySuggestions(); // get city suggestions - only for testing purposes
-        }
+          {filteredCities.length > 0 && (
+            <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              {filteredCities.map((city) => (
+                <Combobox.Option
+                  key={crypto.randomUUID()}
+                  value={city}
+                  className={({ active }) =>
+                    classNames(
+                      'relative cursor-default select-none py-2 pl-8 pr-4',
+                      active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                    )
+                  }
+                >
+                  {({ active, selected }) => (
+                    <>
+                      <span
+                        className={classNames(
+                          'block truncate',
+                          selected && 'font-semibold'
+                        )}
+                      >
+                        {city}
+                      </span>
 
-        }
-        type="button"
-        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-        Search city
-      </button>
+                      {selected && (
+                        <span
+                          className={classNames(
+                            'absolute inset-y-0 left-0 flex items-center pl-1.5',
+                            active ? 'text-white' : 'text-indigo-600'
+                          )}
+                        >
+                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                      )}
+                    </>
+                  )}
+                </Combobox.Option>
+              ))}
+            </Combobox.Options>
+          )}
+        </div>
+      </Combobox>
     </div>
   )
 }
 
-
+function SearchButton({ getWeatherData, setDisplayedCity, selectedCity, showCityAPI}) {
+  return (
+    <button
+      onClick={() => {
+        getWeatherData()
+        setDisplayedCity(selectedCity)
+        showCityAPI()
+      }}
+      type="button"
+      className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      Search city
+    </button>
+  )
+  
+}
 
 function WeatherInfo({ cityName, weatherData }) {
   const [tabs, setTabs] = useState([
@@ -194,6 +208,10 @@ function WeatherInfo({ cityName, weatherData }) {
       current: false,
     },
   ])
+
+  
+
+
 
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
@@ -319,7 +337,7 @@ function WeatherInfo({ cityName, weatherData }) {
           </Popover>
         </div>
       ) : (
-        ''
+        <div>No city found</div>
       )}
     </div>
   )
@@ -341,7 +359,6 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center justify-between">
-      <Example/>
       <Header bg={backgroundColor} />
       <Card />
       <Footer />
