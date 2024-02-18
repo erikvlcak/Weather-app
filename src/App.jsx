@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { Popover, Transition, Combobox } from '@headlessui/react'
 import {
   CheckIcon,
   ChevronUpDownIcon,
   ChevronDownIcon,
 } from '@heroicons/react/20/solid'
-import { useEffect } from 'react'
 
 function Header(props) {
   return (
@@ -34,12 +33,13 @@ function Card() {
   //    }}
   //  }, [selectedCity])
 
-   useEffect(() => {
-     if (searchQuery) {
+  useEffect(() => {
+    if (searchQuery) {
       for (let i = 0; i < 1; i++) {
-       handleCityAPI()
-     }}
-   }, [searchQuery])
+        handleCityAPI()
+      }
+    }
+  }, [searchQuery])
 
   async function handleWeatherAPI() {
     const apiKey = 'ae58c9330c1448dda6f194716240301'
@@ -52,22 +52,21 @@ function Card() {
       })
   }
 
-async function handleCityAPI() {
-  const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=geoname_id%2C%20name%2C%20country&where=%22${searchQuery}%22&limit=20`
+  async function handleCityAPI() {
+    const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=geoname_id%2C%20name%2C%20country&where=%22${searchQuery}%22&limit=20`
 
-  try {
-    const response = await fetch(apiUrl)
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`)
+    try {
+      const response = await fetch(apiUrl)
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`)
+      }
+      const data = await response.json()
+      setSuggestionsList(data.results)
+    } catch (error) {
+      console.error(error)
     }
-    const data = await response.json()
-    setSuggestionsList(data.results)
-    console.log(suggestionsList)
-  } catch (error) {
-    console.error(error)
   }
-}
-  
+
   return (
     <main className="flex flex-row gap-10 w-[50%] mt-20 mb-20">
       <SearchBar
@@ -79,7 +78,12 @@ async function handleCityAPI() {
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
       />
-      <SearchButton getWeatherData={handleWeatherAPI} setDisplayedCity={setDisplayedCity} selectedCity = {selectedCity} showCityAPI = {handleCityAPI} />
+      <SearchButton
+        getWeatherData={handleWeatherAPI}
+        setDisplayedCity={setDisplayedCity}
+        selectedCity={selectedCity}
+        showCityAPI={handleCityAPI}
+      />
       <WeatherInfo cityName={displayedCity} weatherData={weatherData} />
     </main>
   )
@@ -91,21 +95,18 @@ function SearchBar({
   suggestions,
   refreshSuggestions,
   selectedCity,
-  setSelectedCity
+  setSelectedCity,
 }) {
-
-
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
-
 
   const filteredCities =
     query === ''
       ? suggestions
       : suggestions.filter((city) => {
-        return city.name.toLowerCase().includes(query.toLowerCase())
-      })
+          return city.name.toLowerCase().includes(query.toLowerCase())
+        })
 
   return (
     <div className="flex flex-col gap-10">
@@ -180,7 +181,12 @@ function SearchBar({
   )
 }
 
-function SearchButton({ getWeatherData, setDisplayedCity, selectedCity, showCityAPI}) {
+function SearchButton({
+  getWeatherData,
+  setDisplayedCity,
+  selectedCity,
+  showCityAPI,
+}) {
   return (
     <button
       onClick={() => {
@@ -194,7 +200,6 @@ function SearchButton({ getWeatherData, setDisplayedCity, selectedCity, showCity
       Search city
     </button>
   )
-  
 }
 
 function WeatherInfo({ cityName, weatherData }) {
@@ -212,10 +217,6 @@ function WeatherInfo({ cityName, weatherData }) {
       current: false,
     },
   ])
-
-  
-
-
 
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
