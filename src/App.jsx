@@ -27,7 +27,7 @@ function Card() {
 
   async function handleWeatherAPI() {
     const apiKey = 'ae58c9330c1448dda6f194716240301'
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${searchQuery}&days=3`
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${selectedCity}&days=3`
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -36,18 +36,10 @@ function Card() {
       })
   }
 
-  function extractCityNames(data) {
-    let cityNames = []
-    for (let i = 0; i < data.results.length; i++) {
-      cityNames.push(data.results[i].name)
-    }
-    return cityNames
-  }
-
   async function handleCityAPI() {
     
    
-    const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=name%2C%20country&where=%22${searchQuery}%22&limit=20`
+    const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=geoname_id%2C%20name%2C%20country&where=%22${searchQuery}%22&limit=20`
 
     fetch(apiUrl)
       .then((response) => {
@@ -59,8 +51,10 @@ function Card() {
       .then((data) => {
         
       
+        // console.log(data)
+        // console.log(data.results)
         
-        setSuggestionsList(extractCityNames(data))
+        setSuggestionsList(data.results)
         console.log(suggestionsList)
       })
       .catch((error) => {
@@ -104,9 +98,9 @@ function SearchBar({
   const filteredCities =
     query === ''
       ? suggestions
-      : suggestions.filter((suggestion) => {
-          return suggestion.toLowerCase().includes(query.toLowerCase())
-        })
+      : suggestions.filter((city) => {
+        return city.name.toLowerCase().includes(query.toLowerCase())
+      })
 
   return (
     <div className="flex flex-col gap-10">
@@ -137,10 +131,10 @@ function SearchBar({
 
           {filteredCities.length > 0 && (
             <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {filteredCities.map((city, index) => (
+              {filteredCities.map((city) => (
                 <Combobox.Option
-                  key={`${city}-${index}`}
-                  value={city}
+                  key={city.geoname_id}
+                  value={city.name}
                   className={({ active }) =>
                     classNames(
                       'relative cursor-default select-none py-2 pl-8 pr-4',
@@ -156,7 +150,7 @@ function SearchBar({
                           selected && 'font-semibold'
                         )}
                       >
-                        {city}
+                        {`${city.name}, ${city.country}`}
                       </span>
 
                       {selected && (
