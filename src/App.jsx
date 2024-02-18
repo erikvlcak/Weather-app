@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 
 import { useState, Fragment } from 'react'
@@ -7,6 +8,7 @@ import {
   ChevronUpDownIcon,
   ChevronDownIcon,
 } from '@heroicons/react/20/solid'
+import { useEffect } from 'react'
 
 function Header(props) {
   return (
@@ -25,6 +27,20 @@ function Card() {
   const [selectedCity, setSelectedCity] = useState('')
   const [displayedCity, setDisplayedCity] = useState('')
 
+  //  useEffect(() => {
+  //    if (selectedCity) {
+  //     for(let i = 0; i < 1; i++) {
+  //      handleWeatherAPI()
+  //    }}
+  //  }, [selectedCity])
+
+   useEffect(() => {
+     if (searchQuery) {
+      for (let i = 0; i < 1; i++) {
+       handleCityAPI()
+     }}
+   }, [searchQuery])
+
   async function handleWeatherAPI() {
     const apiKey = 'ae58c9330c1448dda6f194716240301'
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${selectedCity}&days=3`
@@ -36,31 +52,20 @@ function Card() {
       })
   }
 
-  async function handleCityAPI() {
-    
-   
-    const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=geoname_id%2C%20name%2C%20country&where=%22${searchQuery}%22&limit=20`
+async function handleCityAPI() {
+  const apiUrl = `https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500@public/records?select=geoname_id%2C%20name%2C%20country&where=%22${searchQuery}%22&limit=20`
 
-    fetch(apiUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`)
-        }
-        return response.json()
-      })
-      .then((data) => {
-        
-      
-        // console.log(data)
-        // console.log(data.results)
-        
-        setSuggestionsList(data.results)
-        console.log(suggestionsList)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-      
+  try {
+    const response = await fetch(apiUrl)
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
+    const data = await response.json()
+    setSuggestionsList(data.results)
+    console.log(suggestionsList)
+  } catch (error) {
+    console.error(error)
+  }
 }
   
   return (
