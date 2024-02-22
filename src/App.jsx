@@ -13,7 +13,7 @@ import questionmark from '../src/assets/questionmark.jpg'
 function Header() {
   return (
     <header
-      className={`w-full h-16 flex justify-center items-center bg-[#001D3D] shadow-xl text-[#FFC300] font-bold text-xl`}
+      className={`w-full h-16 flex justify-center items-center bg-[#A2D2FF] shadow-xl text-white font-bold text-xl`}
     >
       <h1>WEATHER AROUND THE GLOBE</h1>
     </header>
@@ -70,7 +70,7 @@ function Card() {
 
   return (
     <main className="flex flex-col gap-10 justify-evenly items-stretch">
-      <div className="flex flex-row items-center justify-center gap-44 border-2 border-black">
+      <div className="flex flex-row items-center justify-center gap-44 ">
         <SearchBar
           query={searchQuery}
           setQuery={(value) => setSearchQuery(value)}
@@ -126,7 +126,7 @@ function SearchBar({
         <div className="relative">
           <Combobox.Input
             placeholder="What's the weather like in..."
-            className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 font-bold lg:text-lg shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm lg:leading-10"
+            className="w-full rounded-md border-0 bg-[#FFAFCC] py-1.5 pl-3 pr-10 text-white font-bold lg:text-lg shadow-sm ring-4 ring-inset ring-[#CDB4DB] focus:ring-4 focus:ring-inset focus:ring-white sm:text-sm lg:leading-10"
             onChange={(event) => {
               setQuery(event.target.value)
               refreshSuggestions()
@@ -201,7 +201,7 @@ function SearchButton({
         showCityAPI()
       }}
       type="button"
-      className="rounded-xl bg-[#003566] border-2 border-[#000814] text-white hover:bg-[#000814] text-xl font-bold px-3.5 py-2.5 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
+      className="rounded-xl bg-[#FFAFCC] border-4 border-[#CDB4DB] text-white hover:bg-[#FFC8DD] text-xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
     >
       Show me!
     </button>
@@ -377,7 +377,7 @@ export default function App() {
   
 
   return (
-    <div className="flex flex-col h-[100vh] w-[100vw] justify-between items-center bg-[#FFC300]">
+    <div className="flex flex-col h-[100vh] w-[100vw] justify-between items-center bg-[#BDE0FE]">
       <Header />
       <Card />
       <Footer />
