@@ -227,6 +227,7 @@ function WeatherInfo({ cityName, weatherData }) {
       current: false,
     },
   ])
+  
 
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
@@ -253,6 +254,13 @@ function WeatherInfo({ cityName, weatherData }) {
     })
   }
 
+  function getWeatherIcon() {
+    const weatherCode = weatherData.current.condition.code
+    const isDay = weatherData.current.is_day
+    const icon = weatherIcons[isDay][weatherCode]
+    return `../src/assets/${icon}.svg`
+  }
+
   return (
     <div>
       {weatherData ? (
@@ -267,7 +275,7 @@ function WeatherInfo({ cityName, weatherData }) {
               <h2>{weatherData && `${weatherData.current.condition.text}`}</h2>
             </div>
           </div>
-          <div>{weatherData && <img src={} className='w-96 h-96'/>}</div>
+          <div>{weatherData && <img src={getWeatherIcon()} className='w-96 h-96'/>}</div>
           
           <Popover className="relative">
             <Popover.Button className="rounded-md w-full bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
