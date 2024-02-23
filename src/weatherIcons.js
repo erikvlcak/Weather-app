@@ -102,3 +102,4 @@ const weatherIcons = {
 }
 
 
+export default weatherIcons;
