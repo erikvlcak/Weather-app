@@ -7,8 +7,11 @@ import {
   CheckIcon,
   ChevronUpDownIcon,
   ChevronDownIcon,
+  CloudIcon,
 } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
+import cloud from '../src/assets/cloud.png'
+
 
 function Header() {
   return (
@@ -69,7 +72,7 @@ function Card() {
   }
 
   return (
-    <main className="flex flex-col gap-10 justify-evenly items-stretch">
+    <main className="flex flex-col gap-36 justify-evenly items-stretch">
       <div className="flex flex-row items-center justify-center gap-44 ">
         <SearchBar
           query={searchQuery}
@@ -126,7 +129,7 @@ function SearchBar({
         <div className="relative">
           <Combobox.Input
             placeholder="What's the weather like in..."
-            className="w-full rounded-md border-0 bg-[#FFAFCC] py-1.5 pl-3 pr-10 text-white font-bold lg:text-lg shadow-sm ring-4 ring-inset ring-[#CDB4DB] focus:ring-4 focus:ring-inset focus:ring-white sm:text-sm lg:leading-10"
+            className="w-full placeholder-white rounded-md border-0 bg-[#FFAFCC] py-1.5 pl-3 pr-10 text-white font-bold lg:text-3xl shadow-sm ring-4 ring-inset ring-[#CDB4DB] focus:ring-4 focus:ring-inset focus:ring-white sm:text-sm lg:leading-[3rem]"
             onChange={(event) => {
               setQuery(event.target.value)
               refreshSuggestions()
@@ -150,7 +153,7 @@ function SearchBar({
                   className={({ active }) =>
                     classNames(
                       'relative cursor-default select-none py-2 pl-8 pr-4',
-                      active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                      active ? 'bg-[#FFAFCC] text-white' : 'text-gray-900'
                     )
                   }
                 >
@@ -201,7 +204,7 @@ function SearchButton({
         showCityAPI()
       }}
       type="button"
-      className="rounded-xl bg-[#FFAFCC] border-4 border-[#CDB4DB] text-white hover:bg-[#FFC8DD] text-xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
+      className="rounded-xl bg-[#FFAFCC] border-4 border-[#CDB4DB] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
     >
       Show me!
     </button>
@@ -252,15 +255,19 @@ function WeatherInfo({ cityName, weatherData }) {
   return (
     <div>
       {weatherData ? (
-        <div>
-          <div className=" bg-white rounded-lg shadow-lg border-4 p-10 w-[100%]">
-            <h2 className="text-2xl font-bold">{cityName}</h2>
-            <h2>
-              {weatherData && `Temperature is ${weatherData.current.temp_c}°C`}
-            </h2>
-            <h2>{weatherData && `${weatherData.current.condition.text}`}</h2>
+        <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
+          <div className="col-start-2 col-end-3 row-start-1 row-end-2">
+            <div className="flex flex-col items-center bg-white rounded-lg shadow-lg border-4 p-10 w-full h-full">
+              <h2 className="text-2xl font-bold">{cityName}</h2>
+              <h2>
+                {weatherData &&
+                  `Temperature is ${weatherData.current.temp_c}°C`}
+              </h2>
+              <h2>{weatherData && `${weatherData.current.condition.text}`}</h2>
+            </div>
           </div>
-
+          <div>{weatherData && <img src={cloud} className='w-96 h-96'/>}</div>
+          
           <Popover className="relative">
             <Popover.Button className="rounded-md w-full bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               Display forecast
@@ -348,11 +355,15 @@ function WeatherInfo({ cityName, weatherData }) {
           </Popover>
         </div>
       ) : (
-        <div className=" bg-white rounded-lg shadow-lg border-4 p-10 w-[50%] h-[50%]">
-          <h2 className="text-2xl font-bold">Weather forecast</h2>
-          <h2>Choose a city to see the weather forecast</h2>
+        <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
+          <h2 className="text-7xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
+            I don&apos;t know where to look...
+          </h2>
+          <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-3xl">
+            Choose a city to see the weather forecast
+          </h2>
           <img
-            className="h-full w-full object-cover rounded-lg shadow-lg"
+            className="row-start-1 row-end-3 col-span-1 max-h-[600px] object-contain rounded-lg"
             src={questionmark}
             alt="questionmark"
           ></img>
@@ -377,7 +388,7 @@ export default function App() {
   
 
   return (
-    <div className="flex flex-col h-[100vh] w-[100vw] justify-between items-center bg-[#BDE0FE]">
+    <div className="flex flex-col h-[100vh] justify-between items-center bg-[#BDE0FE]">
       <Header />
       <Card />
       <Footer />
