@@ -27,8 +27,9 @@ function Card() {
   const [displayedCity, setDisplayedCity] = useState('')
 
   const [weatherConditions, setWeatherConditions] = useState([])
+  const [weatherForecast, setWeatherForecast] = useState([])
 
-  async function getWeatherConditions(data) {
+  function getWeatherConditions(data) {
     setWeatherConditions([
       {
         condition: 'Temperature',
@@ -83,15 +84,37 @@ function Card() {
           symbol: 'in',
         },
       },
+
+      {
+        condition: 'Humidity',
+        units_primary: {
+          display: true,
+          value: `${data.current.humidity}`,
+          symbol: '%',
+        },
+      }
     ])
   }
 
-  //  useEffect(() => {
-  //    if (selectedCity) {
-  //     for(let i = 0; i < 1; i++) {
-  //      handleWeatherAPI()
-  //    }}
-  //  }, [selectedCity])
+  function getweatherForecast(data) { //get the forecast for the next 3 days
+    setWeatherForecast([
+      {
+        condition: 'Maximum Temperature',
+        units_primary: {
+          display: true,
+          value: `${data.current.temp_c}`,
+          symbol: '°C',
+        },
+        units_secondary: {
+          display: false,
+          value: `${data.current.temp_f}`,
+          symbol: 'F',
+        },
+      },
+    ])
+  }
+
+  }
 
   useEffect(() => {
     if (searchQuery) {
@@ -110,6 +133,7 @@ function Card() {
         console.log(data)
         setWeatherData(data)
         getWeatherConditions(data)
+        getweatherForecast(data)
       })
   }
 
@@ -185,9 +209,6 @@ function SearchBar({
         value={query.length > 0 ? selectedCity : ''}
         onChange={setSelectedCity}
       >
-        {/* <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
-          What&apos;s the weather like in...
-        </Combobox.Label> */}
         <div className="relative">
           <Combobox.Input
             placeholder="What's the weather like in..."
@@ -298,7 +319,7 @@ function WeatherInfo({
   function handleUnitsChange(clickedCondition) {
     setWeatherConditions((prevConditions) => {
       return prevConditions.map((item) => {
-        if (item.condition === clickedCondition) {
+        if ((item.condition === clickedCondition) && (item.condition !== 'Humidity')) {
           if (item.units_primary.display) {
             return {
               ...item,
@@ -369,7 +390,7 @@ function WeatherInfo({
             )}
           </div>
 
-          <span className=" rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
+          <div className=" rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
             <button
               type="button"
               className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
@@ -388,7 +409,12 @@ function WeatherInfo({
             >
               {formatDate(weatherData.forecast.forecastday[2].date)}
             </button>
-          </span>
+          </div>
+
+          <div className="col-start-1 col-end-3 row-start-4 row-end-5 flex justify-center items-center">
+
+          </div>
+
         </div>
       ) : (
         <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
