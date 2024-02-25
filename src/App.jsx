@@ -15,7 +15,7 @@ import weatherIcons from './weathericons.js'
 function Header() {
   return (
     <header
-      className={`w-full h-16 flex justify-center items-center bg-[#A2D2FF] shadow-xl text-white font-bold text-xl`}
+      className='w-full h-16 mb-10 flex justify-center items-center bg-[#A2D2FF] shadow-xl text-white font-bold text-xl'
     >
       <h1>WEATHER AROUND THE GLOBE</h1>
     </header>
@@ -132,7 +132,7 @@ function Card() {
   }
 
   return (
-    <main className="flex flex-col gap-36 justify-evenly items-stretch">
+    <main className="flex flex-col gap-10 justify-start items-stretch">
       <div className="flex flex-row items-center justify-center gap-44 ">
         <SearchBar
           query={searchQuery}
@@ -282,21 +282,6 @@ function WeatherInfo({
   weatherConditions,
   setWeatherConditions,
 }) {
-  const [tabs, setTabs] = useState([
-    {
-      name: 'Today',
-      current: true,
-    },
-    {
-      name: 'Tomorrow',
-      current: false,
-    },
-    {
-      name: 'Overmorrow',
-      current: false,
-    },
-  ])
-
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
     const options = { weekday: 'long', day: 'numeric', month: 'numeric' }
@@ -304,22 +289,6 @@ function WeatherInfo({
     const parts = formatter.formatToParts(parsedDate)
     const formattedDate = `${parts[0].value} ${parts[4].value}.${parts[2].value}.`
     return formattedDate
-  }
-
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-  }
-
-  function handleTabChange(index) {
-    setTabs((prevTabs) => {
-      return prevTabs.map((tab, i) => {
-        if (i === index) {
-          return { ...tab, current: true }
-        } else {
-          return { ...tab, current: false }
-        }
-      })
-    })
   }
 
   function getWeatherIcon() {
@@ -362,137 +331,67 @@ function WeatherInfo({
   return (
     <div>
       {weatherData ? (
-        <div className="grid grid-cols-2 grid-rows-3 bg-white rounded-lg shadow-lg border-4 p-2 w-[50vw] h-[50vh] ">
-          <div className="col-start-2 col-end-3 row-start-1 row-end-3">
-            <div className="grid bg-white place-items-center rounded-lg shadow-lg border-4 w-full h-full">
-              <h2 className="row-start-1 row-end-2 col-span-2">
-                <i>Today, {weatherData.current.last_updated.slice(11)}</i>
-              </h2>
-              <h2 className="text-2xl font-bold row-start-2 row-end-3 col-span-2">
-                {cityName}
-              </h2>
-              <h2 className="row-start-3 row-end-4 col-span-2">
-                {weatherData.current.condition.text}
-              </h2>
-
-              <div className="col-start-1 col-end-3">
-                {weatherConditions.map((item) => {
-                  return (
-                    <div
-                      key={item.condition}
-                      className="flex flex-row w-60 justify-between border-2 border-black"
-                      onClick={() => handleUnitsChange(item.condition)}
-                    >
-                      <div>{item.condition}:</div>
-
-                      {item.units_primary.display ? (
-                        <div>
-                          {item.units_primary.value} {item.units_primary.symbol}
-                        </div>
-                      ) : (
-                        <div>
-                          {item.units_secondary.value}{' '}
-                          {item.units_secondary.symbol}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
+        <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 p-2 ">
+          <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
+            <div>
+              <i>Today, {weatherData.current.last_updated.slice(11)}</i>
+            </div>
+            <div className="text-3xl font-bold ">{cityName.toUpperCase()}</div>
+            <div className="text-xl font-bold">
+              {weatherData.current.condition.text}
             </div>
           </div>
 
-          <div className="col-start-1 col-end-2 row-start-1 row-end-3">
+          <div className="col-start-2 col-end-3 row-start-2 row-end-3 place-self-center">
+            {weatherConditions.map((item) => {
+              return (
+                <div
+                  key={item.condition}
+                  className="flex flex-row w-60 justify-between border-2 bg-[#A2D2FF] rounded-lg p-2 m-2 cursor-pointer hover:bg-[#BDE0FE] transition-all"
+                  onClick={() => handleUnitsChange(item.condition)}
+                >
+                  <div>{item.condition}:</div>
+
+                  {item.units_primary.display ? (
+                    <div>
+                      {item.units_primary.value} {item.units_primary.symbol}
+                    </div>
+                  ) : (
+                    <div>
+                      {item.units_secondary.value} {item.units_secondary.symbol}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="col-start-1 col-end-2 row-start-2 row-end-3 flex justify-center items-center">
             {weatherData && (
-              <img src={getWeatherIcon()} className="w-60 h-60" />
+              <img src={getWeatherIcon()} className="w-72 h-72" />
             )}
           </div>
 
-          <Popover className="relative col-start-1 col-end-3 row-start-3 row-end-4">
-            <Popover.Button className="rounded-md w-full bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Display forecast
-              <ChevronDownIcon
-                className="h-5 w-5 flex-none text-gray-400"
-                aria-hidden="true"
-              />
-            </Popover.Button>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
+          <span className=" rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
+            <button
+              type="button"
+              className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
             >
-              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-96 rounded-3xl bg-white p-4 shadow-lg ring-1 ring-gray-900/5">
-                <div>
-                  <div className="sm:hidden">
-                    <label htmlFor="tabs" className="sr-only">
-                      Select a tab
-                    </label>
-                    <select
-                      id="tabs"
-                      name="tabs"
-                      className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                      defaultValue={tabs.find((tab) => tab.current).name}
-                    >
-                      {tabs.map((tab) => (
-                        <option key={tab.name}>{tab.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="hidden sm:block">
-                    <nav
-                      className="isolate flex divide-x divide-gray-200 rounded-lg shadow cursor-pointer"
-                      aria-label="Tabs"
-                    >
-                      {tabs.map(
-                        (tab, tabIdx) => (
-                          (tab.name = formatDate(
-                            weatherData.forecast.forecastday[tabIdx].date
-                          )),
-                          (
-                            <a
-                              key={tab.name}
-                              href={tab.href}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                handleTabChange(tabIdx)
-                              }}
-                              className={classNames(
-                                tab.current
-                                  ? 'text-gray-900'
-                                  : 'text-gray-500 hover:text-gray-700',
-                                tabIdx === 0 ? 'rounded-l-lg' : '',
-                                tabIdx === tabs.length - 1
-                                  ? 'rounded-r-lg'
-                                  : '',
-                                'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10'
-                              )}
-                              aria-current={tab.current ? 'page' : undefined}
-                            >
-                              <span>{tab.name}</span>
-                              <span
-                                aria-hidden="true"
-                                className={classNames(
-                                  tab.current
-                                    ? 'bg-indigo-500'
-                                    : 'bg-transparent',
-                                  'absolute inset-x-0 bottom-0 h-0.5'
-                                )}
-                              />
-                            </a>
-                          )
-                        )
-                      )}
-                    </nav>
-                  </div>
-                </div>
-              </Popover.Panel>
-            </Transition>
-          </Popover>
+              {formatDate(weatherData.forecast.forecastday[0].date)}
+            </button>
+            <button
+              type="button"
+              className="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+            >
+              {formatDate(weatherData.forecast.forecastday[1].date)}
+            </button>
+            <button
+              type="button"
+              className="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+            >
+              {formatDate(weatherData.forecast.forecastday[2].date)}
+            </button>
+          </span>
         </div>
       ) : (
         <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
@@ -526,10 +425,10 @@ function Footer() {
 
 export default function App() {
   return (
-    <div className="flex flex-col h-[100vh] justify-between items-center bg-[#BDE0FE]">
-      <Header />
+    <div className="flex flex-col h-[100vh] justify-start items-center bg-[#BDE0FE]">
+      <Header/>
       <Card />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }
