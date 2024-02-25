@@ -1,22 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 
-import { useState, Fragment, useEffect } from 'react'
-import { Popover, Transition, Combobox } from '@headlessui/react'
+import { useState,useEffect } from 'react'
+import {Combobox } from '@headlessui/react'
 import {
   CheckIcon,
   ChevronUpDownIcon,
-  ChevronDownIcon,
-  CloudIcon,
+  
 } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
 import weatherIcons from './weathericons.js'
 
 function Header() {
   return (
-    <header
-      className='w-full h-16 mb-10 flex justify-center items-center bg-[#A2D2FF] shadow-xl text-white font-bold text-xl'
-    >
+    <header className="w-full h-16 mb-10 flex justify-center items-center bg-[#FFAFCC] shadow-xl text-white font-bold text-xl">
       <h1>WEATHER AROUND THE GLOBE</h1>
     </header>
   )
@@ -133,7 +130,7 @@ function Card() {
 
   return (
     <main className="flex flex-col gap-10 justify-start items-stretch">
-      <div className="flex flex-row items-center justify-center gap-44 ">
+      <div className="flex flex-row items-center justify-center gap-10 ">
         <SearchBar
           query={searchQuery}
           setQuery={(value) => setSearchQuery(value)}
@@ -194,7 +191,7 @@ function SearchBar({
         <div className="relative">
           <Combobox.Input
             placeholder="What's the weather like in..."
-            className="w-full placeholder-white rounded-md border-0 bg-[#FFAFCC] py-1.5 pl-3 pr-10 text-white font-bold lg:text-3xl shadow-sm ring-4 ring-inset ring-[#CDB4DB] focus:ring-4 focus:ring-inset focus:ring-white sm:text-sm lg:leading-[3rem]"
+            className="w-full placeholder-white rounded-3xl border-0 bg-white py-1.5 pl-3 pr-10 text-black font-bold lg:text-3xl shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white sm:text-sm lg:leading-[3rem]"
             onChange={(event) => {
               setQuery(event.target.value)
               refreshSuggestions()
@@ -237,7 +234,7 @@ function SearchBar({
                         <span
                           className={classNames(
                             'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                            active ? 'text-white' : 'text-indigo-600'
+                            active ? 'text-white' : 'text-[#A2D2FF]'
                           )}
                         >
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -269,7 +266,7 @@ function SearchButton({
         showCityAPI()
       }}
       type="button"
-      className="rounded-xl bg-[#FFAFCC] border-4 border-[#CDB4DB] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
+      className="rounded-3xl bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
     >
       Show me!
     </button>
@@ -331,7 +328,7 @@ function WeatherInfo({
   return (
     <div>
       {weatherData ? (
-        <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 p-2 ">
+        <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-2 ">
           <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
             <div>
               <i>Today, {weatherData.current.last_updated.slice(11)}</i>
