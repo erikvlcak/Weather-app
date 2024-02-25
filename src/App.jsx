@@ -12,8 +12,6 @@ import {
 import questionmark from '../src/assets/questionmark.jpg'
 import weatherIcons from './weathericons.js'
 
-
-
 function Header() {
   return (
     <header
@@ -32,8 +30,6 @@ function Card() {
   const [displayedCity, setDisplayedCity] = useState('')
 
   const [weatherConditions, setWeatherConditions] = useState([])
-
-  
 
   async function getWeatherConditions(data) {
     setWeatherConditions([
@@ -91,7 +87,6 @@ function Card() {
         },
       },
     ])
-    
   }
 
   //  useEffect(() => {
@@ -281,9 +276,12 @@ function SearchButton({
   )
 }
 
-function WeatherInfo({ cityName, weatherData, weatherConditions, setWeatherConditions }) {
-
-
+function WeatherInfo({
+  cityName,
+  weatherData,
+  weatherConditions,
+  setWeatherConditions,
+}) {
   const [tabs, setTabs] = useState([
     {
       name: 'Today',
@@ -298,11 +296,6 @@ function WeatherInfo({ cityName, weatherData, weatherConditions, setWeatherCondi
       current: false,
     },
   ])
-
-  
-
-  
-
 
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
@@ -336,6 +329,36 @@ function WeatherInfo({ cityName, weatherData, weatherConditions, setWeatherCondi
     return `../src/assets/${icon}.svg`
   }
 
+  function handleUnitsChange(clickedCondition) {
+    setWeatherConditions((prevConditions) => {
+      return prevConditions.map((item) => {
+        if (item.condition === clickedCondition) {
+          if (item.units_primary.display) {
+            return {
+              ...item,
+              units_primary: {
+                ...item.units_primary,
+                display: false,
+              },
+              units_secondary: { ...item.units_secondary, display: true },
+            }
+          } else {
+            return {
+              ...item,
+              units_primary: {
+                ...item.units_primary,
+                display: true,
+              },
+              units_secondary: { ...item.units_secondary, display: false },
+            }
+          }
+        } else {
+          return item
+        }
+      })
+    })
+  }
+
   return (
     <div>
       {weatherData ? (
@@ -353,13 +376,12 @@ function WeatherInfo({ cityName, weatherData, weatherConditions, setWeatherCondi
               </h2>
 
               <div className="col-start-1 col-end-3">
-              
                 {weatherConditions.map((item) => {
-                 
                   return (
                     <div
                       key={item.condition}
                       className="flex flex-row w-60 justify-between border-2 border-black"
+                      onClick={() => handleUnitsChange(item.condition)}
                     >
                       <div>{item.condition}:</div>
 
@@ -369,17 +391,14 @@ function WeatherInfo({ cityName, weatherData, weatherConditions, setWeatherCondi
                         </div>
                       ) : (
                         <div>
-                          {item.units_secondary.value} {item.units_secondary.symbol}
+                          {item.units_secondary.value}{' '}
+                          {item.units_secondary.symbol}
                         </div>
                       )}
                     </div>
                   )
-                  
-                  
                 })}
               </div>
-
-              
             </div>
           </div>
 
@@ -506,8 +525,6 @@ function Footer() {
 }
 
 export default function App() {
-  
-
   return (
     <div className="flex flex-col h-[100vh] justify-between items-center bg-[#BDE0FE]">
       <Header />
