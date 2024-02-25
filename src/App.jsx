@@ -31,6 +31,28 @@ function Card() {
   const [selectedCity, setSelectedCity] = useState('')
   const [displayedCity, setDisplayedCity] = useState('')
 
+  const [weatherConditions, setWeatherConditions] = useState([])
+
+  async function getWeatherConditions(data) {
+    setWeatherConditions([
+      { condition: 'Temperature',
+        value: `${data.current.temp_c} °C` },
+      {
+        condition: 'Feels like',
+        value: `${data.current.feelslike_c} °C`,
+      },
+      {
+        condition: 'Wind speed',
+        value: `${data.current.wind_kph} km/h`,
+      },
+      {
+        condition: 'Precipitation',
+        value: `${data.current.precip_mm} mm`,
+      },
+    ])
+    
+  }
+
   //  useEffect(() => {
   //    if (selectedCity) {
   //     for(let i = 0; i < 1; i++) {
@@ -54,6 +76,7 @@ function Card() {
       .then((data) => {
         console.log(data)
         setWeatherData(data)
+        getWeatherConditions(data)
       })
   }
 
@@ -92,7 +115,7 @@ function Card() {
         />
       </div>
       <div className="flex justify-center items-center">
-        <WeatherInfo cityName={displayedCity} weatherData={weatherData} />
+        <WeatherInfo cityName={displayedCity} weatherData={weatherData} weatherConditions={weatherConditions} />
       </div>
     </main>
   )
@@ -212,7 +235,9 @@ function SearchButton({
   )
 }
 
-function WeatherInfo({ cityName, weatherData }) {
+function WeatherInfo({ cityName, weatherData, weatherConditions }) {
+
+
   const [tabs, setTabs] = useState([
     {
       name: 'Today',
@@ -227,7 +252,11 @@ function WeatherInfo({ cityName, weatherData }) {
       current: false,
     },
   ])
+
   
+  const [units, setTempUnits] = useState([{temp: 'c', wind: 'kph', precip: 'mm'}])
+  
+
 
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
@@ -264,20 +293,47 @@ function WeatherInfo({ cityName, weatherData }) {
   return (
     <div>
       {weatherData ? (
-        <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
-          <div className="col-start-2 col-end-3 row-start-1 row-end-2">
-            <div className="flex flex-col items-center bg-white rounded-lg shadow-lg border-4 p-10 w-full h-full">
-              <h2 className="text-2xl font-bold">{cityName}</h2>
-              <h2>
-                {weatherData &&
-                  `Temperature is ${weatherData.current.temp_c}°C`}
+        <div className="grid grid-cols-2 grid-rows-3 bg-white rounded-lg shadow-lg border-4 p-2 w-[50vw] h-[50vh] ">
+          <div className="col-start-2 col-end-3 row-start-1 row-end-3">
+            <div className="grid bg-white place-items-center rounded-lg shadow-lg border-4 w-full h-full">
+              <h2 className="row-start-1 row-end-2 col-span-2">
+                <i>Today, {weatherData.current.last_updated.slice(11)}</i>
               </h2>
-              <h2>{weatherData && `${weatherData.current.condition.text}`}</h2>
+              <h2 className="text-2xl font-bold row-start-2 row-end-3 col-span-2">
+                {cityName}
+              </h2>
+              <h2 className="row-start-3 row-end-4 col-span-2">
+                {weatherData.current.condition.text}
+              </h2>
+
+              <div className="col-start-1 col-end-3">
+              
+                {weatherConditions.map((item) => {
+                  return (
+                    <div
+                      key={item.condition}
+                      className="flex flex-row w-60 justify-between border-2 border-black"
+                    >
+                      <div>{item.condition}:</div>
+                      <div>{item.value}</div>
+                    </div>
+                  )
+                  
+                  
+                })}
+              </div>
+
+              
             </div>
           </div>
-          <div>{weatherData && <img src={getWeatherIcon()} className='w-96 h-96'/>}</div>
-          
-          <Popover className="relative">
+
+          <div className="col-start-1 col-end-2 row-start-1 row-end-3">
+            {weatherData && (
+              <img src={getWeatherIcon()} className="w-60 h-60" />
+            )}
+          </div>
+
+          <Popover className="relative col-start-1 col-end-3 row-start-3 row-end-4">
             <Popover.Button className="rounded-md w-full bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               Display forecast
               <ChevronDownIcon
@@ -365,10 +421,10 @@ function WeatherInfo({ cityName, weatherData }) {
         </div>
       ) : (
         <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
-          <h2 className="text-7xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
+          <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
             I don&apos;t know where to look...
           </h2>
-          <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-3xl">
+          <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl">
             Choose a city to see the weather forecast
           </h2>
           <img
