@@ -33,21 +33,62 @@ function Card() {
 
   const [weatherConditions, setWeatherConditions] = useState([])
 
+  
+
   async function getWeatherConditions(data) {
     setWeatherConditions([
-      { condition: 'Temperature',
-        value: `${data.current.temp_c} °C` },
+      {
+        condition: 'Temperature',
+        units_primary: {
+          display: true,
+          value: `${data.current.temp_c}`,
+          symbol: '°C',
+        },
+        units_secondary: {
+          display: false,
+          value: `${data.current.temp_f}`,
+          symbol: 'F',
+        },
+      },
       {
         condition: 'Feels like',
-        value: `${data.current.feelslike_c} °C`,
+        units_primary: {
+          display: true,
+          value: `${data.current.feelslike_c}`,
+          symbol: '°C',
+        },
+        units_secondary: {
+          display: false,
+          value: `${data.current.feelslike_f}`,
+          symbol: 'F',
+        },
       },
       {
         condition: 'Wind speed',
-        value: `${data.current.wind_kph} km/h`,
+        units_primary: {
+          display: true,
+          value: `${data.current.wind_kph}`,
+          symbol: 'km/h',
+        },
+        units_secondary: {
+          display: false,
+          value: `${data.current.wind_mph}`,
+          symbol: 'mph',
+        },
       },
       {
         condition: 'Precipitation',
-        value: `${data.current.precip_mm} mm`,
+
+        units_primary: {
+          display: true,
+          value: `${data.current.precip_mm}`,
+          symbol: 'mm',
+        },
+        units_secondary: {
+          display: false,
+          value: `${data.current.precip_in}`,
+          symbol: 'in',
+        },
       },
     ])
     
@@ -115,7 +156,12 @@ function Card() {
         />
       </div>
       <div className="flex justify-center items-center">
-        <WeatherInfo cityName={displayedCity} weatherData={weatherData} weatherConditions={weatherConditions} />
+        <WeatherInfo
+          cityName={displayedCity}
+          weatherData={weatherData}
+          weatherConditions={weatherConditions}
+          setWeatherConditions={setWeatherConditions}
+        />
       </div>
     </main>
   )
@@ -235,7 +281,7 @@ function SearchButton({
   )
 }
 
-function WeatherInfo({ cityName, weatherData, weatherConditions }) {
+function WeatherInfo({ cityName, weatherData, weatherConditions, setWeatherConditions }) {
 
 
   const [tabs, setTabs] = useState([
@@ -254,7 +300,7 @@ function WeatherInfo({ cityName, weatherData, weatherConditions }) {
   ])
 
   
-  const [units, setTempUnits] = useState([{temp: 'c', wind: 'kph', precip: 'mm'}])
+
   
 
 
@@ -309,13 +355,23 @@ function WeatherInfo({ cityName, weatherData, weatherConditions }) {
               <div className="col-start-1 col-end-3">
               
                 {weatherConditions.map((item) => {
+                 
                   return (
                     <div
                       key={item.condition}
                       className="flex flex-row w-60 justify-between border-2 border-black"
                     >
                       <div>{item.condition}:</div>
-                      <div>{item.value}</div>
+
+                      {item.units_primary.display ? (
+                        <div>
+                          {item.units_primary.value} {item.units_primary.symbol}
+                        </div>
+                      ) : (
+                        <div>
+                          {item.units_secondary.value} {item.units_secondary.symbol}
+                        </div>
+                      )}
                     </div>
                   )
                   
