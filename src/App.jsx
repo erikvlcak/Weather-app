@@ -1,13 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 
-import { useState,useEffect } from 'react'
-import {Combobox } from '@headlessui/react'
-import {
-  CheckIcon,
-  ChevronUpDownIcon,
-  
-} from '@heroicons/react/20/solid'
+import { useState, useEffect } from 'react'
+import { Combobox } from '@headlessui/react'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
 import weatherIcons from './weathericons.js'
 
@@ -92,14 +88,15 @@ function Card() {
           value: `${data.current.humidity}`,
           symbol: '%',
         },
-      }
+      },
     ])
   }
 
-  function getweatherForecast(data) { //get the forecast for the next 3 days
+  function getweatherForecast(data) {
+    //get the forecast for the next 3 days
     setWeatherForecast([
       {
-        condition: 'Maximum Temperature',
+        condition: 'Maximum',
         units_primary: {
           display: true,
           value: `${data.current.temp_c}`,
@@ -113,8 +110,6 @@ function Card() {
       },
     ])
   }
-
-  
 
   useEffect(() => {
     if (searchQuery) {
@@ -319,7 +314,10 @@ function WeatherInfo({
   function handleUnitsChange(clickedCondition) {
     setWeatherConditions((prevConditions) => {
       return prevConditions.map((item) => {
-        if ((item.condition === clickedCondition) && (item.condition !== 'Humidity')) {
+        if (
+          item.condition === clickedCondition &&
+          item.condition !== 'Humidity'
+        ) {
           if (item.units_primary.display) {
             return {
               ...item,
@@ -349,7 +347,7 @@ function WeatherInfo({
   return (
     <div>
       {weatherData ? (
-        <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-2 ">
+        <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-2 relative w-[100%] h-auto overflow-hidden">
           <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
             <div>
               <i>Today, {weatherData.current.last_updated.slice(11)}</i>
@@ -411,10 +409,7 @@ function WeatherInfo({
             </button>
           </div>
 
-          <div className="col-start-1 col-end-3 row-start-4 row-end-5 flex justify-center items-center">
-
-          </div>
-
+          <div className="col-start-1 col-end-3 row-start-4 row-end-5 flex justify-center items-center"></div>
         </div>
       ) : (
         <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
@@ -425,7 +420,7 @@ function WeatherInfo({
             Choose a city to see the weather forecast
           </h2>
           <img
-            className="row-start-1 row-end-3 col-span-1 max-h-[600px] object-contain rounded-lg"
+            className="row-start-1 row-end-3 col-span-1 max-h-full max-w-full object-contain rounded-lg w-auto h-auto block m-[0 auto]"
             src={questionmark}
             alt="questionmark"
           ></img>
@@ -435,21 +430,21 @@ function WeatherInfo({
   )
 }
 
-function Footer() {
-  return (
-    <header
-      className={`w-full h-8 flex justify-center items-center text-gray-500 text-sm`}
-    >
-      <h1>WEATHER AROUND THE GLOBE</h1>
-      <div className="h-0.5 w-20 bg-gray-500"></div>
-    </header>
-  )
-}
+// function Footer() {
+//   return (
+//     <header
+//       className={`w-full h-8 flex justify-center items-center text-gray-500 text-sm`}
+//     >
+//       <h1>WEATHER AROUND THE GLOBE</h1>
+//       <div className="h-0.5 w-20 bg-gray-500"></div>
+//     </header>
+//   )
+// }
 
 export default function App() {
   return (
     <div className="flex flex-col h-[100vh] justify-start items-center bg-[#BDE0FE]">
-      <Header/>
+      <Header />
       <Card />
       {/* <Footer /> */}
     </div>
