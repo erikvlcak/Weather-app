@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-
+import _ from 'lodash'
 import { useState, useEffect } from 'react'
 import { Combobox } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -18,12 +18,12 @@ function Header() {
 function Card() {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestionsList, setSuggestionsList] = useState([])
-  const [weatherData, setWeatherData] = useState(null)
+  const [weatherData, setWeatherData] = useState('initial')
   const [selectedCity, setSelectedCity] = useState('')
   const [displayedCity, setDisplayedCity] = useState('')
 
   const [weatherConditions, setWeatherConditions] = useState([])
-  const [weatherForecast, setWeatherForecast] = useState([])
+  const [forecastDay, setForecastDay] = useState('current')
 
   function getWeatherConditions(data) {
     setWeatherConditions([
@@ -31,12 +31,12 @@ function Card() {
         condition: 'Temperature',
         units_primary: {
           display: true,
-          value: `${data.current.temp_c}`,
+          value: _.get(_.get(data, forecastDay), 'temp_c'),
           symbol: '°C',
         },
         units_secondary: {
           display: false,
-          value: `${data.current.temp_f}`,
+          value: _.get(_.get(data, forecastDay), 'temp_f'),
           symbol: 'F',
         },
       },
@@ -44,12 +44,12 @@ function Card() {
         condition: 'Feels like',
         units_primary: {
           display: true,
-          value: `${data.current.feelslike_c}`,
+          value: _.get(_.get(data, forecastDay), 'feelslike_c'),
           symbol: '°C',
         },
         units_secondary: {
           display: false,
-          value: `${data.current.feelslike_f}`,
+          value: _.get(_.get(data, forecastDay), 'feelslike_f'),
           symbol: 'F',
         },
       },
@@ -57,12 +57,12 @@ function Card() {
         condition: 'Wind speed',
         units_primary: {
           display: true,
-          value: `${data.current.wind_kph}`,
+          value: _.get(_.get(data, forecastDay), 'wind_kph'),
           symbol: 'km/h',
         },
         units_secondary: {
           display: false,
-          value: `${data.current.wind_mph}`,
+          value: _.get(_.get(data, forecastDay), 'wind_mph'),
           symbol: 'mph',
         },
       },
@@ -71,12 +71,12 @@ function Card() {
 
         units_primary: {
           display: true,
-          value: `${data.current.precip_mm}`,
+          value: _.get(_.get(data, forecastDay), 'precip_mm'),
           symbol: 'mm',
         },
         units_secondary: {
           display: false,
-          value: `${data.current.precip_in}`,
+          value: _.get(_.get(data, forecastDay), 'precip_in'),
           symbol: 'in',
         },
       },
@@ -85,27 +85,8 @@ function Card() {
         condition: 'Humidity',
         units_primary: {
           display: true,
-          value: `${data.current.humidity}`,
+          value: _.get(_.get(data, forecastDay), 'humidity'),
           symbol: '%',
-        },
-      },
-    ])
-  }
-
-  function getweatherForecast(data) {
-    //get the forecast for the next 3 days
-    setWeatherForecast([
-      {
-        condition: 'Maximum',
-        units_primary: {
-          display: true,
-          value: `${data.current.temp_c}`,
-          symbol: '°C',
-        },
-        units_secondary: {
-          display: false,
-          value: `${data.current.temp_f}`,
-          symbol: 'F',
         },
       },
     ])
@@ -122,14 +103,32 @@ function Card() {
   async function handleWeatherAPI() {
     const apiKey = 'ae58c9330c1448dda6f194716240301'
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${selectedCity}&days=3`
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
+
+    // if (!selectedCity) {
+    //   setWeatherData(null)
+    //   return
+    // }
+
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`)
+      }
+      const data = await response.json()
+      console.log('I am updating weatherData')
+      if (!selectedCity) {
+        setWeatherData(null)
+      } else {
         setWeatherData(data)
         getWeatherConditions(data)
-        getweatherForecast(data)
-      })
+        console.log(
+          console.log(`data is ${data.forecast.forecastday[1].hour[12]}`)
+        )
+      }
+    } catch (error) {
+      console.error(error)
+      setWeatherData(null)
+    }
   }
 
   async function handleCityAPI() {
@@ -141,7 +140,11 @@ function Card() {
         throw new Error(`Error: ${response.status}`)
       }
       const data = await response.json()
+
       setSuggestionsList(data.results)
+      if (data.results.length === 0) {
+        setSelectedCity(null)
+      }
     } catch (error) {
       console.error(error)
     }
@@ -172,6 +175,9 @@ function Card() {
           weatherData={weatherData}
           weatherConditions={weatherConditions}
           setWeatherConditions={setWeatherConditions}
+          setForecastDay={setForecastDay}
+          forecastDay={forecastDay}
+          getWeatherConditions={getWeatherConditions}
         />
       </div>
     </main>
@@ -207,7 +213,7 @@ function SearchBar({
         <div className="relative">
           <Combobox.Input
             placeholder="What's the weather like in..."
-            className="w-full placeholder-white rounded-3xl border-0 bg-white py-1.5 pl-3 pr-10 text-black font-bold lg:text-3xl shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white sm:text-sm lg:leading-[3rem]"
+            className=" w-full md:w-96 placeholder-white rounded-xl border-0 text-3xl bg-white py-3 pl-3 pr-10 text-black font-bold shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white"
             onChange={(event) => {
               setQuery(event.target.value)
               refreshSuggestions()
@@ -278,11 +284,15 @@ function SearchButton({
     <button
       onClick={() => {
         getWeatherData()
-        setDisplayedCity(selectedCity)
+        if (selectedCity) {
+          setDisplayedCity(selectedCity)
+        } else {
+          setDisplayedCity('')
+        }
         showCityAPI()
       }}
       type="button"
-      className="rounded-3xl bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
+      className="rounded-xl bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
     >
       Show me!
     </button>
@@ -294,6 +304,8 @@ function WeatherInfo({
   weatherData,
   weatherConditions,
   setWeatherConditions,
+  setForecastDay,
+  getWeatherConditions,
 }) {
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
@@ -344,73 +356,104 @@ function WeatherInfo({
     })
   }
 
+  console.log('weatherData:', weatherData)
+
   return (
     <div>
-      {weatherData ? (
-        <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-2 relative w-[100%] h-auto overflow-hidden">
-          <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
-            <div>
-              <i>Today, {weatherData.current.last_updated.slice(11)}</i>
+      {weatherData !== 'initial' ? (
+        !weatherData ? (
+          <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
+            <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
+              This city does not exist!
+            </h2>
+            <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl">
+              Did you mean:
+            </h2>
+            <img
+              className="row-start-1 row-end-3 col-span-1 max-h-full max-w-full object-contain rounded-lg w-auto h-auto block m-[0 auto]"
+              src={questionmark}
+              alt="questionmark"
+            ></img>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-2 relative w-[100%] h-auto overflow-hidden">
+            <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
+              <div>
+                <i>Today, {weatherData.current.last_updated.slice(11)}</i>
+              </div>
+              <div className="text-3xl font-bold ">
+                {cityName.toUpperCase()}
+              </div>
+              <div className="text-xl font-bold">
+                {weatherData.current.condition.text}
+              </div>
             </div>
-            <div className="text-3xl font-bold ">{cityName.toUpperCase()}</div>
-            <div className="text-xl font-bold">
-              {weatherData.current.condition.text}
+            <div className="col-start-2 col-end-3 row-start-2 row-end-3 place-self-center">
+              {weatherConditions.map((item) => {
+                return (
+                  <div
+                    key={item.condition}
+                    className="flex flex-row w-60 justify-between border-2 bg-[#A2D2FF] rounded-lg p-2 m-2 cursor-pointer hover:bg-[#BDE0FE] transition-all"
+                    onClick={() => handleUnitsChange(item.condition)}
+                  >
+                    <div>{item.condition}:</div>
+                    {item.units_primary.display ? (
+                      <div>
+                        {item.units_primary.value} {item.units_primary.symbol}
+                      </div>
+                    ) : (
+                      <div>
+                        {item.units_secondary.value}{' '}
+                        {item.units_secondary.symbol}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
+
+            <div className="col-start-1 col-end-2 row-start-2 row-end-3 flex justify-center items-center">
+              {weatherData && (
+                <img src={getWeatherIcon()} className="w-72 h-72" />
+              )}
+            </div>
+
+            <div className=" rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
+              <button
+                onClick={() => {
+                  setForecastDay('current')
+                  getWeatherConditions(weatherData)
+                }}
+                type="button"
+                className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+              >
+                {formatDate(weatherData.forecast.forecastday[0].date)}
+              </button>
+              <button
+                onClick={() => {
+                  setForecastDay('forecast.forecastday[1].hour[12]')
+                  getWeatherConditions(weatherData)
+                }}
+                type="button"
+                className="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+              >
+                {formatDate(weatherData.forecast.forecastday[1].date)}
+              </button>
+              <button
+                onClick={() => {
+                  setForecastDay('forecast.forecastday[2].hour[12]')
+                  getWeatherConditions(weatherData)
+                }}
+                type="button"
+                className="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+              >
+                {formatDate(weatherData.forecast.forecastday[2].date)}
+              </button>
+            </div>
+
+            <div className="col-start-1 col-end-3 row-start-4 row-end-5 flex justify-center items-center"></div>
           </div>
-
-          <div className="col-start-2 col-end-3 row-start-2 row-end-3 place-self-center">
-            {weatherConditions.map((item) => {
-              return (
-                <div
-                  key={item.condition}
-                  className="flex flex-row w-60 justify-between border-2 bg-[#A2D2FF] rounded-lg p-2 m-2 cursor-pointer hover:bg-[#BDE0FE] transition-all"
-                  onClick={() => handleUnitsChange(item.condition)}
-                >
-                  <div>{item.condition}:</div>
-
-                  {item.units_primary.display ? (
-                    <div>
-                      {item.units_primary.value} {item.units_primary.symbol}
-                    </div>
-                  ) : (
-                    <div>
-                      {item.units_secondary.value} {item.units_secondary.symbol}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="col-start-1 col-end-2 row-start-2 row-end-3 flex justify-center items-center">
-            {weatherData && (
-              <img src={getWeatherIcon()} className="w-72 h-72" />
-            )}
-          </div>
-
-          <div className=" rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
-            <button
-              type="button"
-              className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-            >
-              {formatDate(weatherData.forecast.forecastday[0].date)}
-            </button>
-            <button
-              type="button"
-              className="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-            >
-              {formatDate(weatherData.forecast.forecastday[1].date)}
-            </button>
-            <button
-              type="button"
-              className="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-            >
-              {formatDate(weatherData.forecast.forecastday[2].date)}
-            </button>
-          </div>
-
-          <div className="col-start-1 col-end-3 row-start-4 row-end-5 flex justify-center items-center"></div>
-        </div>
+        )
       ) : (
         <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
           <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
