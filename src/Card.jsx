@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { Combobox } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
-import weatherIcons from './weathericons.js'
+import weatherIcons from './weatherIcons.jsx'
 import notfound from '../src/assets/notfound.jpg'
 
 export default function Card() {
