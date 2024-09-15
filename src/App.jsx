@@ -6,10 +6,12 @@ import { Combobox } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
 import weatherIcons from './weathericons.js'
+import notfound from '../src/assets/notfound.jpg'
+import githublogo from '../src/assets/githublogo.png'
 
 function Header() {
   return (
-    <header className="w-full h-16 mb-10 flex justify-center items-center bg-[#FFAFCC] shadow-xl text-white font-bold text-xl">
+    <header className="w-full h-28 border-b-4 border-pink-50 flex justify-center items-center bg-[#FFAFCC] shadow-xl text-white font-bold text-4xl">
       <h1>WEATHER AROUND THE GLOBE</h1>
     </header>
   )
@@ -152,7 +154,7 @@ function Card() {
   }
 
   return (
-    <main className="flex flex-col gap-10 justify-start items-stretch">
+    <main className="flex flex-col gap-10 justify-start items-stretch font-['Poppins']">
       <div className="flex flex-row items-center justify-center gap-10 ">
         <SearchBar
           query={searchQuery}
@@ -369,15 +371,15 @@ function WeatherInfo({
         !weatherData ? (
           <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
             <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
-              This city does not exist!
+              Your city does not exist on this planet (yet).
             </h2>
             <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl">
-              Did you mean:
+              Please chceck the city name and search again!
             </h2>
             <img
               className="row-start-1 row-end-3 col-span-1 max-h-full max-w-full object-contain rounded-lg w-auto h-auto block m-[0 auto]"
-              src={questionmark}
-              alt="questionmark"
+              src={notfound}
+              alt="city does not exist"
             ></img>
           </div>
         ) : (
@@ -431,7 +433,7 @@ function WeatherInfo({
                   getWeatherConditions(weatherData)
                 }}
                 type="button"
-                className={`relative -ml-px inline-flex items-center bg-white px-3 py-2 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
+                className={`relative -ml-px inline-flex items-center  px-3 py-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
                   forecastDate === 0 && 'bg-pink-300'
                 }`}
               >
@@ -444,7 +446,7 @@ function WeatherInfo({
                   getWeatherConditions(weatherData)
                 }}
                 type="button"
-                className={`relative -ml-px inline-flex items-center bg-white px-3 py-2 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
+                className={`relative -ml-px inline-flex items-center px-3 py-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
                   forecastDate === 1 && 'bg-pink-300'
                 }`}
               >
@@ -457,7 +459,7 @@ function WeatherInfo({
                   getWeatherConditions(weatherData)
                 }}
                 type="button"
-                className={`relative -ml-px inline-flex items-center bg-white px-3 py-2 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
+                className={`relative -ml-px inline-flex items-center  px-3 py-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
                   forecastDate === 2 && 'bg-pink-300'
                 }`}
               >
@@ -473,13 +475,13 @@ function WeatherInfo({
           <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
             I don&apos;t know where to look...
           </h2>
-          <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl">
+          <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl text-center">
             Choose a city to see the weather forecast
           </h2>
           <img
             className="row-start-1 row-end-3 col-span-1 max-h-full max-w-full object-contain rounded-lg w-auto h-auto block m-[0 auto]"
             src={questionmark}
-            alt="questionmark"
+            alt="enter city name"
           ></img>
         </div>
       )}
@@ -487,23 +489,28 @@ function WeatherInfo({
   )
 }
 
-// function Footer() {
-//   return (
-//     <header
-//       className={`w-full h-8 flex justify-center items-center text-gray-500 text-sm`}
-//     >
-//       <h1>WEATHER AROUND THE GLOBE</h1>
-//       <div className="h-0.5 w-20 bg-gray-500"></div>
-//     </header>
-//   )
-// }
+function Footer() {
+  return (
+    <header
+      className={`w-full h-8 flex justify-center items-center text-gray-500 text-sm`}
+    >
+      <div className="flex flex-row gap-1 items-center">
+        Made by
+        <a href="https://github.com/erikvlcak">
+          <img src={githublogo} alt="github logo" className="h-5 w-5" />
+        </a>
+        <a href="https://github.com/erikvlcak"> Erik Vlcak 2024</a>
+      </div>
+    </header>
+  )
+}
 
 export default function App() {
   return (
-    <div className="flex flex-col h-[100vh] justify-start items-center bg-[#BDE0FE]">
+    <div className="flex flex-col h-[100svh] justify-between items-center bg-[#BDE0FE]">
       <Header />
       <Card />
-      {/* <Footer /> */}
+      <Footer />
     </div>
   )
 }
