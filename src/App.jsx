@@ -24,6 +24,7 @@ function Card() {
 
   const [weatherConditions, setWeatherConditions] = useState([])
   const [forecastDay, setForecastDay] = useState('current')
+  const [forecastDate, setForecastDate] = useState(0)
 
   function getWeatherConditions(data) {
     setWeatherConditions([
@@ -80,7 +81,6 @@ function Card() {
           symbol: 'in',
         },
       },
-
       {
         condition: 'Humidity',
         units_primary: {
@@ -100,14 +100,15 @@ function Card() {
     }
   }, [searchQuery])
 
+  useEffect(() => {
+    if (weatherData !== 'initial') {
+      getWeatherConditions(weatherData)
+    }
+  }, [forecastDay, weatherData])
+
   async function handleWeatherAPI() {
     const apiKey = 'ae58c9330c1448dda6f194716240301'
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${selectedCity}&days=3`
-
-    // if (!selectedCity) {
-    //   setWeatherData(null)
-    //   return
-    // }
 
     try {
       const response = await fetch(url)
@@ -178,6 +179,8 @@ function Card() {
           setForecastDay={setForecastDay}
           forecastDay={forecastDay}
           getWeatherConditions={getWeatherConditions}
+          setForecastDate={setForecastDate}
+          forecastDate={forecastDate}
         />
       </div>
     </main>
@@ -306,6 +309,8 @@ function WeatherInfo({
   setWeatherConditions,
   setForecastDay,
   getWeatherConditions,
+  forecastDate,
+  setForecastDate,
 }) {
   function formatDate(inputDate) {
     const parsedDate = new Date(`20${inputDate.replace(/-/g, '/')}`)
@@ -376,7 +381,7 @@ function WeatherInfo({
             ></img>
           </div>
         ) : (
-          <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-2 relative w-[100%] h-auto overflow-hidden">
+          <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-8 gap-4 relative w-[100%] h-auto overflow-hidden">
             <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
               <div>
                 <i>Today, {weatherData.current.last_updated.slice(11)}</i>
@@ -418,34 +423,43 @@ function WeatherInfo({
               )}
             </div>
 
-            <div className=" rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
-              <button
+            <div className="rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
+              <button //today
                 onClick={() => {
                   setForecastDay('current')
+                  setForecastDate(0)
                   getWeatherConditions(weatherData)
                 }}
                 type="button"
-                className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+                className={`relative -ml-px inline-flex items-center bg-white px-3 py-2 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
+                  forecastDate === 0 && 'bg-pink-300'
+                }`}
               >
-                {formatDate(weatherData.forecast.forecastday[0].date)}
+                Today
               </button>
-              <button
+              <button //tomorrow
                 onClick={() => {
                   setForecastDay('forecast.forecastday[1].hour[12]')
+                  setForecastDate(1)
                   getWeatherConditions(weatherData)
                 }}
                 type="button"
-                className="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+                className={`relative -ml-px inline-flex items-center bg-white px-3 py-2 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
+                  forecastDate === 1 && 'bg-pink-300'
+                }`}
               >
                 {formatDate(weatherData.forecast.forecastday[1].date)}
               </button>
-              <button
+              <button //overtomorrow
                 onClick={() => {
                   setForecastDay('forecast.forecastday[2].hour[12]')
+                  setForecastDate(2)
                   getWeatherConditions(weatherData)
                 }}
                 type="button"
-                className="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+                className={`relative -ml-px inline-flex items-center bg-white px-3 py-2 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
+                  forecastDate === 2 && 'bg-pink-300'
+                }`}
               >
                 {formatDate(weatherData.forecast.forecastday[2].date)}
               </button>
