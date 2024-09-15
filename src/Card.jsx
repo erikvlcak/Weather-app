@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 
-import _ from 'lodash'
 import { useState, useEffect } from 'react'
 import { Combobox } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -17,69 +16,111 @@ export default function Card() {
   const [displayedCity, setDisplayedCity] = useState('')
 
   const [weatherConditions, setWeatherConditions] = useState([])
-  const [forecastDay, setForecastDay] = useState('current')
+
   const [forecastDate, setForecastDate] = useState(0)
 
-  function getWeatherConditions(data) {
+  //   useEffect(() => {
+  //     if (weatherData) {
+  //       getWeatherConditions(weatherData, forecastDate)
+  //     }
+  //   }, [forecastDate, weatherData])
+
+  function getWeatherConditions(data, forecastDate) {
     setWeatherConditions([
       {
-        condition: 'Temperature',
+        condition: forecastDate === 0 ? 'Temperature' : 'Average temperature',
         units_primary: {
           display: true,
-          value: _.get(_.get(data, forecastDay), 'temp_c'),
+          value:
+            forecastDate === 0
+              ? data.current.temp_c
+              : data.forecast.forecastday[forecastDate].day.avgtemp_c,
           symbol: '°C',
         },
         units_secondary: {
           display: false,
-          value: _.get(_.get(data, forecastDay), 'temp_f'),
+          value:
+            forecastDate === 0
+              ? data.current.temp_f
+              : data.forecast.forecastday[forecastDate].day.avgtemp_f,
           symbol: 'F',
         },
       },
       {
-        condition: 'Feels like',
+        condition: forecastDate === 0 ? 'Feels like' : 'Max / Min temperature',
         units_primary: {
           display: true,
-          value: _.get(_.get(data, forecastDay), 'feelslike_c'),
+          value:
+            forecastDate === 0
+              ? data.current.feelslike_c
+              : `${data.forecast.forecastday[forecastDate].day.maxtemp_c} / ${data.forecast.forecastday[forecastDate].day.mintemp_c}`,
           symbol: '°C',
         },
         units_secondary: {
           display: false,
-          value: _.get(_.get(data, forecastDay), 'feelslike_f'),
+          value:
+            forecastDate === 0
+              ? data.current.feelslike_f
+              : `${data.forecast.forecastday[forecastDate].day.maxtemp_f} / ${data.forecast.forecastday[forecastDate].day.mintemp_f}`,
           symbol: 'F',
         },
       },
       {
-        condition: 'Wind speed',
+        condition: forecastDate === 0 ? 'Wind speed' : 'Max wind speed',
         units_primary: {
           display: true,
-          value: _.get(_.get(data, forecastDay), 'wind_kph'),
+          value:
+            forecastDate === 0
+              ? data.current.wind_kph
+              : data.forecast.forecastday[forecastDate].day.maxwind_kph,
           symbol: 'km/h',
         },
         units_secondary: {
           display: false,
-          value: _.get(_.get(data, forecastDay), 'wind_mph'),
+          value:
+            forecastDate === 0
+              ? data.current.wind_mph
+              : data.forecast.forecastday[forecastDate].day.maxwind_mph,
           symbol: 'mph',
         },
       },
       {
-        condition: 'Precipitation',
+        condition:
+          forecastDate === 0 ? 'Precipitation' : 'Chance of rain / snow',
 
         units_primary: {
           display: true,
-          value: _.get(_.get(data, forecastDay), 'precip_mm'),
-          symbol: 'mm',
+          value:
+            forecastDate === 0
+              ? data.current.precip_mm
+              : `${data.forecast.forecastday[forecastDate].day.daily_chance_of_rain} / ${data.forecast.forecastday[forecastDate].day.daily_chance_of_snow}`,
+          symbol: forecastDate === 0 ? 'mm' : '%',
         },
         units_secondary: {
           display: false,
-          value: _.get(_.get(data, forecastDay), 'precip_in'),
-          symbol: 'in',
+          value:
+            forecastDate === 0
+              ? data.current.precip_in
+              : `${data.forecast.forecastday[forecastDate].day.daily_chance_of_rain} / ${data.forecast.forecastday[forecastDate].day.daily_chance_of_snow}`,
+          symbol: forecastDate === 0 ? 'in' : '%',
         },
       },
       {
-        condition: 'Humidity',
+        condition: forecastDate === 0 ? 'Humidity' : 'Average humidity',
         units_primary: {
           display: true,
-          value: _.get(_.get(data, forecastDay), 'humidity'),
+          value:
+            forecastDate === 0
+              ? data.current.humidity
+              : data.forecast.forecastday[forecastDate].day.avghumidity,
+          symbol: '%',
+        },
+        units_secondary: {
+          display: false,
+          value:
+            forecastDate === 0
+              ? data.current.humidity
+              : data.forecast.forecastday[forecastDate].day.avghumidity,
           symbol: '%',
         },
       },
@@ -96,9 +137,9 @@ export default function Card() {
 
   useEffect(() => {
     if (weatherData !== 'initial') {
-      getWeatherConditions(weatherData)
+      getWeatherConditions(weatherData, forecastDate)
     }
-  }, [forecastDay, weatherData])
+  }, [forecastDate, weatherData])
 
   async function handleWeatherAPI() {
     const apiKey = 'ae58c9330c1448dda6f194716240301'
@@ -110,15 +151,12 @@ export default function Card() {
         throw new Error(`Error: ${response.status}`)
       }
       const data = await response.json()
-      console.log('I am updating weatherData')
+
       if (!selectedCity) {
         setWeatherData(null)
       } else {
         setWeatherData(data)
-        getWeatherConditions(data)
-        console.log(
-          console.log(`data is ${data.forecast.forecastday[1].hour[12]}`)
-        )
+        getWeatherConditions(data, forecastDate)
       }
     } catch (error) {
       console.error(error)
@@ -162,6 +200,8 @@ export default function Card() {
           setDisplayedCity={setDisplayedCity}
           selectedCity={selectedCity}
           showCityAPI={handleCityAPI}
+          setForecastDate={setForecastDate}
+          forecastDate={forecastDate}
         />
       </div>
       <div className="flex justify-center items-center">
@@ -170,8 +210,6 @@ export default function Card() {
           weatherData={weatherData}
           weatherConditions={weatherConditions}
           setWeatherConditions={setWeatherConditions}
-          setForecastDay={setForecastDay}
-          forecastDay={forecastDay}
           getWeatherConditions={getWeatherConditions}
           setForecastDate={setForecastDate}
           forecastDate={forecastDate}
@@ -276,6 +314,7 @@ function SearchButton({
   setDisplayedCity,
   selectedCity,
   showCityAPI,
+  setForecastDate,
 }) {
   return (
     <button
@@ -287,11 +326,12 @@ function SearchButton({
           setDisplayedCity('')
         }
         showCityAPI()
+        setForecastDate(0)
       }}
       type="button"
-      className="rounded-xl bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-2.5 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
+      className="rounded-xl bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-3 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
     >
-      Show me!
+      Search
     </button>
   )
 }
@@ -301,7 +341,7 @@ function WeatherInfo({
   weatherData,
   weatherConditions,
   setWeatherConditions,
-  setForecastDay,
+
   getWeatherConditions,
   forecastDate,
   setForecastDate,
@@ -315,8 +355,14 @@ function WeatherInfo({
     return formattedDate
   }
 
-  function getWeatherIcon() {
-    const weatherCode = weatherData.current.condition.code
+  function getWeatherIcon(forecastDate) {
+    let weatherCode =
+      forecastDate === 0
+        ? weatherData.current.condition.code
+        : forecastDate === 1
+          ? weatherData.forecast.forecastday[1].day.condition.code
+          : weatherData.forecast.forecastday[2].day.condition.code
+
     const isDay = weatherData.current.is_day
     const icon = weatherIcons[isDay][weatherCode]
     return `../src/assets/${icon}.svg`
@@ -355,7 +401,13 @@ function WeatherInfo({
     })
   }
 
-  console.log('weatherData:', weatherData)
+  function showProperForecastTime(forecastDate) {
+    if (forecastDate === 0) {
+      return <i>Today {weatherData.current.last_updated.slice(11)}</i>
+    } else if (forecastDate === 1) {
+      return <i>{formatDate(weatherData.forecast.forecastday[1].date)}</i>
+    } else return <i>{formatDate(weatherData.forecast.forecastday[2].date)}</i>
+  }
 
   return (
     <div>
@@ -375,11 +427,9 @@ function WeatherInfo({
             ></img>
           </div>
         ) : (
-          <div className="grid grid-cols-2 grid-rows-[min-content_1fr_min-content-1fr] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-8 gap-4 relative w-[100%] h-auto overflow-hidden">
+          <div className="grid grid-cols-[repeat(2,_minmax(22rem,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-10 gap-10 relative w-[100%] h-auto overflow-hidden">
             <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
-              <div>
-                <i>Today, {weatherData.current.last_updated.slice(11)}</i>
-              </div>
+              <div>{showProperForecastTime(forecastDate)}</div>
               <div className="text-3xl font-bold ">
                 {cityName.toUpperCase()}
               </div>
@@ -387,12 +437,12 @@ function WeatherInfo({
                 {weatherData.current.condition.text}
               </div>
             </div>
-            <div className="col-start-2 col-end-3 row-start-2 row-end-3 place-self-center">
+            <div className="col-start-2 col-end-3 row-start-2 row-end-3 place-self-stretch select-none">
               {weatherConditions.map((item) => {
                 return (
                   <div
                     key={item.condition}
-                    className="flex flex-row w-60 justify-between border-2 bg-[#A2D2FF] rounded-lg p-2 m-2 cursor-pointer hover:bg-[#BDE0FE] transition-all"
+                    className="flex flex-row justify-between border-2 bg-[#A2D2FF] rounded-lg p-3 m-3 cursor-pointer hover:bg-[#BDE0FE] transition-all"
                     onClick={() => handleUnitsChange(item.condition)}
                   >
                     <div>{item.condition}:</div>
@@ -413,19 +463,22 @@ function WeatherInfo({
 
             <div className="col-start-1 col-end-2 row-start-2 row-end-3 flex justify-center items-center">
               {weatherData && (
-                <img src={getWeatherIcon()} className="w-72 h-72" />
+                <img
+                  src={getWeatherIcon(forecastDate)}
+                  className="w-full h-full"
+                />
               )}
             </div>
 
-            <div className="rounded-md shadow-sm col-start-1 col-end-3 row-start-3 row-end-4 place-self-center">
+            <div className="rounded-md shadow-xl col-start-1 col-end-3 row-start-3 row-end-4 place-self-center mt-10">
               <button //today
                 onClick={() => {
-                  setForecastDay('current')
                   setForecastDate(0)
-                  getWeatherConditions(weatherData)
+
+                  getWeatherConditions(weatherData, 0)
                 }}
                 type="button"
-                className={`relative -ml-px inline-flex items-center  px-3 py-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
+                className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
                   forecastDate === 0 && 'bg-pink-300'
                 }`}
               >
@@ -433,12 +486,12 @@ function WeatherInfo({
               </button>
               <button //tomorrow
                 onClick={() => {
-                  setForecastDay('forecast.forecastday[1].hour[12]')
                   setForecastDate(1)
-                  getWeatherConditions(weatherData)
+
+                  getWeatherConditions(weatherData, 1)
                 }}
                 type="button"
-                className={`relative -ml-px inline-flex items-center px-3 py-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
+                className={`relative -ml-px inline-flex items-center p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
                   forecastDate === 1 && 'bg-pink-300'
                 }`}
               >
@@ -446,12 +499,12 @@ function WeatherInfo({
               </button>
               <button //overtomorrow
                 onClick={() => {
-                  setForecastDay('forecast.forecastday[2].hour[12]')
                   setForecastDate(2)
-                  getWeatherConditions(weatherData)
+
+                  getWeatherConditions(weatherData, 2)
                 }}
                 type="button"
-                className={`relative -ml-px inline-flex items-center  px-3 py-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
+                className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
                   forecastDate === 2 && 'bg-pink-300'
                 }`}
               >
