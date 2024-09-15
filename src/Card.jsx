@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { Combobox } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
-import weatherIcons from './weatherIcons.jsx'
+import weatherIcons from './weathericons.js'
 import notfound from '../src/assets/notfound.jpg'
 
 export default function Card() {
@@ -19,13 +19,13 @@ export default function Card() {
 
   const [forecastDate, setForecastDate] = useState(0)
 
-  //   useEffect(() => {
-  //     if (weatherData) {
-  //       getWeatherConditions(weatherData, forecastDate)
-  //     }
-  //   }, [forecastDate, weatherData])
+  //
 
   function getWeatherConditions(data, forecastDate) {
+    if (!data) {
+      console.error('Invalid data:', data)
+      return
+    }
     setWeatherConditions([
       {
         condition: forecastDate === 0 ? 'Temperature' : 'Average temperature',
