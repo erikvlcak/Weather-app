@@ -363,7 +363,7 @@ function WeatherInfo({
         !weatherData ? (
           <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
             <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
-              Your city does not exist on this planet (yet).
+              Searched city does not exist on this planet (yet).
             </h2>
             <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl">
               Please chceck the city name and search again!
