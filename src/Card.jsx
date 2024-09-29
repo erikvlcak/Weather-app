@@ -365,7 +365,7 @@ function WeatherInfo({
 
     const isDay = weatherData.current.is_day
     const icon = weatherIcons[isDay][weatherCode]
-    return `../src/assets/${icon}.svg`
+    return `./${icon}.svg`
   }
 
   function handleUnitsChange(clickedCondition) {
