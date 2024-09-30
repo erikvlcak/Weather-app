@@ -427,7 +427,7 @@ function WeatherInfo({
             ></img>
           </div>
         ) : (
-          <div className="grid grid-cols-[repeat(2,_minmax(22rem,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-10 gap-10 relative w-[100%] h-auto overflow-hidden">
+          <div className="grid grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-10 pb-0 gap-5 relative md:w-full md:h-auto sm:w-full sm:h-auto overflow-hidden">
             <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
               <div>{showProperForecastTime(forecastDate)}</div>
               <div className="text-3xl font-bold ">
