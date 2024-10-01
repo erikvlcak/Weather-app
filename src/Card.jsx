@@ -183,8 +183,8 @@ export default function Card() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center md:h-[100vh] md:gap-40 gap-10 font-['Poppins'] m-2 md:ml-5 md:mr-5">
-      <div className="flex flex-row items-center md:self-center justify-self-start">
+    <main className="flex flex-col items-center justify-center md:h-[100%] md:gap-10 gap-10 font-['Poppins'] md:ml-5 md:mr-5">
+      <div className="flex flex-row items-center md:self-center justify-self-start ml-5 mr-5">
         <SearchBar
           query={searchQuery}
           setQuery={(value) => setSearchQuery(value)}
@@ -405,7 +405,7 @@ function WeatherInfo({
     <div className="flex items-center justify-center w-[100%]">
       {weatherData !== 'initial' ? (
         !weatherData ? (
-          <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 max-w-[80vw] md:h-[750px] md:w-[750px] place-items-center">
+          <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 max-w-[80vw] h-[20%] md:h-[50vh] md:w-[50vw] place-items-center">
             <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
               Searched city does not exist on this planet (yet).
             </h1>
@@ -506,7 +506,7 @@ function WeatherInfo({
           </div>
         )
       ) : (
-        <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 max-w-[80vw] md:h-[750px] md:w-[750px] place-items-center">
+        <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 max-w-[80vw] h-[20%] md:h-[50vh] md:w-[50vw] place-items-center">
           <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
             I don&apos;t know where to look...
           </h1>
