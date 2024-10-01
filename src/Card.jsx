@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react'
 import { Combobox } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import questionmark from '../src/assets/questionmark.jpg'
 import weatherIcons from './weathericons.js'
 import notfound from '../src/assets/notfound.jpg'
@@ -184,8 +183,8 @@ export default function Card() {
   }
 
   return (
-    <main className="flex flex-col gap-10 justify-start items-stretch font-['Poppins']">
-      <div className="flex flex-row items-center justify-center gap-10 ">
+    <main className="flex flex-col gap-20 justify-around items-center font-['Poppins'] ml-5 mr-5">
+      <div className="flex flex-row items-center justify-center">
         <SearchBar
           query={searchQuery}
           setQuery={(value) => setSearchQuery(value)}
@@ -204,7 +203,7 @@ export default function Card() {
           forecastDate={forecastDate}
         />
       </div>
-      <div className="flex justify-center items-center">
+      <div>
         <WeatherInfo
           cityName={displayedCity}
           weatherData={weatherData}
@@ -239,16 +238,17 @@ function SearchBar({
         })
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className>
       <Combobox
         as="div"
         value={query.length > 0 ? selectedCity : ''}
         onChange={setSelectedCity}
+        className="mr-2 md:mr-10"
       >
-        <div className="relative">
+        <div className="">
           <Combobox.Input
             placeholder="What's the weather like in..."
-            className=" w-full md:w-96 placeholder-white rounded-xl border-0 text-3xl bg-white py-3 pl-3 pr-10 text-black font-bold shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white"
+            className="w-[100%] md:w-[50wv] placeholder-white rounded-xl border-0 text-3xl bg-white py-3 pl-3 text-black font-bold shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white"
             onChange={(event) => {
               setQuery(event.target.value)
               refreshSuggestions()
@@ -256,15 +256,9 @@ function SearchBar({
             displayValue={(selectedCity) => selectedCity}
             onBlur={() => refreshSuggestions()}
           />
-          <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
-            <ChevronUpDownIcon
-              className="h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
-          </Combobox.Button>
 
           {filteredCities.length > 0 && (
-            <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-[90%] md:w-[596px] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {filteredCities.map((city) => (
                 <Combobox.Option
                   key={city.geoname_id}
@@ -293,9 +287,7 @@ function SearchBar({
                             'absolute inset-y-0 left-0 flex items-center pl-1.5',
                             active ? 'text-white' : 'text-[#A2D2FF]'
                           )}
-                        >
-                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                        </span>
+                        ></span>
                       )}
                     </>
                   )}
@@ -413,22 +405,22 @@ function WeatherInfo({
     <div>
       {weatherData !== 'initial' ? (
         !weatherData ? (
-          <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
-            <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
+          <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-10 max-w-[50vw] h-[50vh] place-items-center">
+            <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
               Searched city does not exist on this planet (yet).
-            </h2>
-            <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl">
+            </h1>
+            <h2 className="text-sm">
               Please chceck the city name and search again!
             </h2>
             <img
-              className="row-start-1 row-end-3 col-span-1 max-h-full max-w-full object-contain rounded-lg w-auto h-auto block m-[0 auto]"
+              className="row-start-1 row-end-3 col-span-1 h-full w-full object-contain rounded-lg block m-[0 auto]"
               src={notfound}
               alt="city does not exist"
             ></img>
           </div>
         ) : (
-          <div className="grid grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-10 pb-0 gap-5 relative md:w-full md:h-auto sm:w-full sm:h-auto overflow-hidden">
-            <div className="flex flex-col col-start-1 col-end-3 row-start-1 row-end-2 justify-start items-center">
+          <div className="flex flex-col justify-center md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-5 gap-0 relative w-full md:min-w-[45vw]">
+            <div className="flex flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 justify-start items-center">
               <div>{showProperForecastTime(forecastDate)}</div>
               <div className="text-3xl font-bold ">
                 {cityName.toUpperCase()}
@@ -437,7 +429,7 @@ function WeatherInfo({
                 {weatherData.current.condition.text}
               </div>
             </div>
-            <div className="col-start-2 col-end-3 row-start-2 row-end-3 place-self-stretch select-none">
+            <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3 md:place-self-center md:select-none w-full">
               {weatherConditions.map((item) => {
                 return (
                   <div
@@ -461,16 +453,16 @@ function WeatherInfo({
               })}
             </div>
 
-            <div className="col-start-1 col-end-2 row-start-2 row-end-3 flex justify-center items-center">
+            <div className="md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 flex justify-center items-center">
               {weatherData && (
                 <img
                   src={getWeatherIcon(forecastDate)}
-                  className="w-full h-full"
+                  className="md:w-full md:h-full hidden md:block"
                 />
               )}
             </div>
 
-            <div className="rounded-md shadow-xl col-start-1 col-end-3 row-start-3 row-end-4 place-self-center mt-10">
+            <div className="flex flex-row rounded-md shadow-xl md:col-start-1 md:col-end-3 md:row-start-3 md:row-end-4 place-self-center mt-2 md:mt-0">
               <button //today
                 onClick={() => {
                   setForecastDate(0)
@@ -516,15 +508,13 @@ function WeatherInfo({
           </div>
         )
       ) : (
-        <div className="grid grid-cols-2 grid-rows-2 bg-white rounded-lg shadow-lg border-4 p-10 w-[50vw] h-[50vh] place-items-center">
-          <h2 className="text-4xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center">
+        <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-10 max-w-[50vw] h-[50vh] place-items-center">
+          <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
             I don&apos;t know where to look...
-          </h2>
-          <h2 className="col-start-1 col-end-2 row-start-2 row-end-3 text-xl text-center">
-            Choose a city to see the weather forecast
-          </h2>
+          </h1>
+          <h2 className="text-sm">Choose a city to see the weather forecast</h2>
           <img
-            className="row-start-1 row-end-3 col-span-1 max-h-full max-w-full object-contain rounded-lg w-auto h-auto block m-[0 auto]"
+            className="row-start-1 row-end-3 col-span-1 h-full w-full object-contain rounded-lg block m-[0 auto]"
             src={questionmark}
             alt="enter city name"
           ></img>
