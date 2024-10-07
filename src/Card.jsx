@@ -184,7 +184,7 @@ export default function Card() {
 
   return (
     <main className="flex flex-col items-center justify-center md:h-[100%] md:gap-10 gap-10 font-['Poppins'] md:ml-5 md:mr-5">
-      <div className="flex flex-row items-center md:self-center justify-self-start ml-5 mr-5">
+      <div className="flex md:flex-row items-center md:self-center justify-self-start ml-5 mr-5 flex-col gap-4">
         <SearchBar
           query={searchQuery}
           setQuery={(value) => setSearchQuery(value)}
@@ -321,7 +321,7 @@ function SearchButton({
         setForecastDate(0)
       }}
       type="button"
-      className="rounded-xl bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-3 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
+      className="rounded-xl w-[100%] md:w-[50%] bg-[#FFAFCC] border-4 border-[#FFAFCC] text-white hover:bg-[#FFC8DD] text-3xl font-bold px-3.5 py-3 shadow-lg hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all"
     >
       Search
     </button>
