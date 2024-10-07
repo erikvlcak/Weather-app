@@ -1,13 +1,14 @@
 # Weather App
 
-Tech stack: HTML, CSS, React, Tailwind
+Tech stack: HTML, CSS, Tailwind CSS, Tailwind Components, JavaScript, React.
 
 Features:
-- Weather application working with weather API to display different weather conditions for today and forecast for the next 2 days. Always diplays proper animated weather icon.
+- Application consumes weather API to display actual weather conditions for today and forecast for the next 2 days, along with animated weather icon.
+- Shows wide array of different weather conditions. Units can be switched by clicking on each condition.
 - Takes advantage of city database API to suggest cities in search bar.
-- Can handle non-existing cities.
+- Error page is displayed if user enters non-existing city.
 
-Layout is properly responsive only on desktop - layout done with combination of CSS Grid and Flexbox. Not tested/optimized for other devices. No accessibility features.
+Layout is responsive thanks to CSS Grid and Flexbox. Not yet optimized for mobile devices. No accessibility features.
 
 # Installation and Setup
 
