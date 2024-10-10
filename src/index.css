@@ -6,7 +6,6 @@
   * {
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-
   html,
   body,
   #root {
@@ -14,4 +13,8 @@
     margin: 0;
     padding: 0;
   }
+
+  /* * {
+    border: 1px solid red !important;
+  } */
 }

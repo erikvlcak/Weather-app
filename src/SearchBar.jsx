@@ -20,17 +20,16 @@ export default function SearchBar({
         })
 
   return (
-    <div className>
+    <div className="w-full">
       <Combobox
         as="div"
         value={query.length > 0 ? selectedCity : ''}
         onChange={setSelectedCity}
-        className="mr-2 md:mr-10"
       >
-        <div className="">
+        <div className="w-full">
           <Combobox.Input
-            placeholder="What's the weather like in..."
-            className="w-[100%] md:w-[50wv] placeholder-white rounded-xl border-0 text-3xl bg-white py-3 pl-3 text-black font-bold shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white"
+            placeholder="Enter city name..."
+            className="w-full md:w-[50vw] placeholder-grey rounded-xl border-0 text-2xl bg-pink-50 py-3 pl-3 text-black font-bold shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white"
             onChange={(event) => {
               setQuery(event.target.value)
               refreshSuggestions()
@@ -40,14 +39,14 @@ export default function SearchBar({
           />
 
           {filteredCities.length > 0 && (
-            <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-[90%] md:w-[596px] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Combobox.Options className="absolute z-10 mt-1 max-h-64 md:w-[50vw] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {filteredCities.map((city) => (
                 <Combobox.Option
                   key={city.geoname_id}
                   value={city.name}
                   className={({ active }) =>
                     classNames(
-                      'relative cursor-default select-none py-2 pl-8 pr-4',
+                      'relative cursor-default select-none py-3 px-4 text-xl',
                       active ? 'bg-[#FFAFCC] text-white' : 'text-gray-900'
                     )
                   }

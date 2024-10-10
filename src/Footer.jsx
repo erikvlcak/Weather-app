@@ -1,9 +1,12 @@
+/* eslint-disable react/prop-types */
 import githublogo from '../src/assets/githublogo.png'
 
-export default function Footer() {
+export default function Footer({ weatherData }) {
   return (
     <footer
-      className={`w-full h-8 flex justify-center items-center text-gray-500 text-sm md:m-2`}
+      className={`w-full h-8 hidden ${
+        weatherData == 'initial' ? 'md:flex' : 'md:hidden'
+      } justify-center items-center text-gray-500 text-sm md:m-2`}
     >
       <div className="flex flex-row gap-1 items-center">
         Made by

@@ -8,10 +8,10 @@ import questionmark from '../src/assets/questionmark.jpg'
 import weatherIcons from './weathericons.js'
 import notfound from '../src/assets/notfound.jpg'
 
-export default function Card() {
+export default function Card({ weatherData, setWeatherData }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestionsList, setSuggestionsList] = useState([])
-  const [weatherData, setWeatherData] = useState('initial')
+
   const [selectedCity, setSelectedCity] = useState('')
   const [displayedCity, setDisplayedCity] = useState('')
 
@@ -184,8 +184,8 @@ export default function Card() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center md:h-[100%] md:gap-10 gap-10 font-['Poppins'] md:ml-5 md:mr-5">
-      <div className="flex md:flex-row items-center md:self-center justify-self-start ml-5 mr-5 flex-col gap-4">
+    <main className="flex flex-col items-stretch justify-start md:h-[100%] md:w-[70vw] md:gap-3 gap-5 font-['Poppins'] md:mx-5 mx-1">
+      <div className="flex md:flex-row items-stretch md:self-center justify-self-start mx-2 mt-4 md:mt-0 md:mx-0 flex-col md:gap-5 gap-2">
         <SearchBar
           query={searchQuery}
           setQuery={(value) => setSearchQuery(value)}
@@ -204,7 +204,7 @@ export default function Card() {
           forecastDate={forecastDate}
         />
       </div>
-      <div className="self-center justify-self-center">
+      <div>
         <WeatherInfo
           cityName={displayedCity}
           weatherData={weatherData}
@@ -293,15 +293,16 @@ function WeatherInfo({
   }
 
   return (
-    <div className="flex items-center justify-center w-[100%]">
+    <div className="flex flex-row justify-center items-center mb-10">
       {weatherData !== 'initial' ? (
         !weatherData ? (
-          <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 max-w-[80vw] h-[20%] md:h-[50vh] md:w-[50vw] place-items-center">
+          <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 md:h-[60vh] md:w-[50vw] w-full place-items-center">
             <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
               Searched city does not exist on this planet (yet).
             </h1>
             <h2 className="text-sm">
-              Please chceck the city name and search again!
+              Please chceck if you have entered correct city name and search
+              again!
             </h2>
             <img
               className="row-start-1 row-end-3 col-span-1 w-[70%] h-[70%] object-contain rounded-lg block m-[0 auto]"
@@ -310,36 +311,43 @@ function WeatherInfo({
             ></img>
           </div>
         ) : (
-          <div className="flex flex-col justify-center md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-5 gap-0 relative md:h-[750px] min-w-[80wv] md:w-[750px]">
-            <div className="flex flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 justify-center items-center">
+          <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-5 gap-0 relative w-full md:w-[50vw]">
+            <div className="flex gap-4 py-2 flex-row justify-around items-center md:flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:justify-center md:items-center">
               <div>{showProperForecastTime(forecastDate)}</div>
-              <div className="md:text-3xl text-base font-bold ">
+              <div className="md:text-4xl text-2xl font-bold ">
                 {cityName.toUpperCase()}
               </div>
               <div className="md:text-xl text font-bold">
                 {weatherData.current.condition.text}
               </div>
             </div>
+
             <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3 md:place-self-center md:select-none w-full">
+              <p className="text-center hidden md:block">
+                Click on condition to change units
+              </p>
               {weatherConditions.map((item) => {
                 return (
-                  <div
-                    key={item.condition}
-                    className="flex flex-row justify-between border-2 bg-[#A2D2FF] rounded-lg md:p-3 md:m-3 p-3 m-1 cursor-pointer hover:bg-[#BDE0FE] transition-all"
-                    onClick={() => handleUnitsChange(item.condition)}
-                  >
-                    <div>{item.condition}:</div>
-                    {item.units_primary.display ? (
-                      <div>
-                        {item.units_primary.value} {item.units_primary.symbol}
-                      </div>
-                    ) : (
-                      <div>
-                        {item.units_secondary.value}{' '}
-                        {item.units_secondary.symbol}
-                      </div>
-                    )}
-                  </div>
+                  <>
+                    <div
+                      key={item.condition}
+                      //className="flex flex-row justify-between border-2 bg-[#A2D2FF] rounded-lg md:p-3 md:m-3 p-3 m-1 cursor-pointer hover:bg-[#BDE0FE] transition-all"
+                      className=" text-lg flex flex-row justify-between border-2 bg-[#77abff] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer hover:bg-[#67a0f4] transition-all before:ease relative overflow-hidden  text-white shadow-2xl  before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-1000 hover:shadow-[#77abff] hover:before:-translate-x-[45rem]"
+                      onClick={() => handleUnitsChange(item.condition)}
+                    >
+                      <div>{item.condition}:</div>
+                      {item.units_primary.display ? (
+                        <div>
+                          {item.units_primary.value} {item.units_primary.symbol}
+                        </div>
+                      ) : (
+                        <div>
+                          {item.units_secondary.value}{' '}
+                          {item.units_secondary.symbol}
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )
               })}
             </div>
@@ -362,7 +370,7 @@ function WeatherInfo({
                 }}
                 type="button"
                 className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
-                  forecastDate === 0 && 'bg-pink-300'
+                  forecastDate === 0 && 'bg-pink-300 text-white'
                 }`}
               >
                 Today
@@ -375,7 +383,7 @@ function WeatherInfo({
                 }}
                 type="button"
                 className={`relative -ml-px inline-flex items-center p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
-                  forecastDate === 1 && 'bg-pink-300'
+                  forecastDate === 1 && 'bg-pink-300 text-white'
                 }`}
               >
                 {formatDate(weatherData.forecast.forecastday[1].date)}
@@ -388,7 +396,7 @@ function WeatherInfo({
                 }}
                 type="button"
                 className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
-                  forecastDate === 2 && 'bg-pink-300'
+                  forecastDate === 2 && 'bg-pink-300 text-white'
                 }`}
               >
                 {formatDate(weatherData.forecast.forecastday[2].date)}
@@ -397,11 +405,15 @@ function WeatherInfo({
           </div>
         )
       ) : (
-        <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 max-w-[80vw] h-[20%] md:h-[50vh] md:w-[50vw] place-items-center">
+        <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 md:h-[60vh] md:w-[50vw] place-items-center">
           <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
-            I don&apos;t know where to look...
+            Welcome to my Weather Forecast application!
           </h1>
-          <h2 className="text-sm">Choose a city to see the weather forecast</h2>
+          <h2 className="text-sm w-full md:w-2/3 md:text-base">
+            To check the current weather conditions for any location worldwide,
+            simply enter the city name in the search bar above and click the
+            large pink Search button next to it.
+          </h2>
           <img
             className="row-start-1 row-end-3 col-span-1 w-[70%] h-[70%] object-contain rounded-lg block m-[0 auto]"
             src={questionmark}
