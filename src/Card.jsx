@@ -296,7 +296,7 @@ function WeatherInfo({
     <div className="flex flex-row justify-center items-center mb-10">
       {weatherData !== 'initial' ? (
         !weatherData ? (
-          <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 md:h-[60vh] md:w-[50vw] w-full place-items-center">
+          <div className="flex h-[70vh] flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 md:h-[60vh] md:w-[50vw] w-full place-items-center">
             <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
               Searched city does not exist on this planet (yet).
             </h1>
@@ -305,13 +305,13 @@ function WeatherInfo({
               again!
             </h2>
             <img
-              className="row-start-1 row-end-3 col-span-1 w-[70%] h-[70%] object-contain rounded-lg block m-[0 auto]"
+              className="row-start-1 row-end-3 col-span-1 w-auto h-[50%] bg-contain rounded-lg block m-[0 auto]"
               src={notfound}
               alt="city does not exist"
             ></img>
           </div>
         ) : (
-          <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-5 gap-0 relative w-full md:w-[50vw]">
+          <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-3 gap-0 relative w-full max-w-[700px]">
             <div className="flex gap-4 py-2 flex-row justify-around items-center md:flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:justify-center md:items-center">
               <div>{showProperForecastTime(forecastDate)}</div>
               <div className="md:text-4xl text-2xl font-bold ">
@@ -332,7 +332,7 @@ function WeatherInfo({
                     <div
                       key={item.condition}
                       //className="flex flex-row justify-between border-2 bg-[#A2D2FF] rounded-lg md:p-3 md:m-3 p-3 m-1 cursor-pointer hover:bg-[#BDE0FE] transition-all"
-                      className=" text-lg flex flex-row justify-between border-2 bg-[#77abff] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer hover:bg-[#67a0f4] transition-all before:ease relative overflow-hidden  text-white shadow-2xl  before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-1000 hover:shadow-[#77abff] hover:before:-translate-x-[45rem]"
+                      className=" text-lg flex flex-row justify-between border-2 bg-[#77abff] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer md:hover:bg-[#67a0f4] md:transition-all md:before:ease md:relative md:overflow-hidden  text-white shadow-2xl  md:before:absolute md:before:right-0 md:before:top-0 md:before:h-12 md:before:w-6 md:before:translate-x-12 md:before:rotate-6 md:before:bg-white md:before:opacity-10 md:before:duration-1000 md:hover:shadow-[#77abff] md:hover:before:-translate-x-[45rem]"
                       onClick={() => handleUnitsChange(item.condition)}
                     >
                       <div>{item.condition}:</div>
@@ -405,7 +405,7 @@ function WeatherInfo({
           </div>
         )
       ) : (
-        <div className="flex flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 md:h-[60vh] md:w-[50vw] place-items-center">
+        <div className="flex h-[70vh] flex-col items-center justify-evenly gap-4 text-center  bg-white rounded-lg shadow-lg border-4 p-5 md:h-[60vh] md:w-[50vw] place-items-center">
           <h1 className="text-2xl font-bold col-start-1 col-end-2 row-start-1 row-end-2 text-center md:place-items-end">
             Welcome to my Weather Forecast application!
           </h1>
@@ -415,7 +415,7 @@ function WeatherInfo({
             large pink Search button next to it.
           </h2>
           <img
-            className="row-start-1 row-end-3 col-span-1 w-[70%] h-[70%] object-contain rounded-lg block m-[0 auto]"
+            className="row-start-1 row-end-3 col-span-1 w-auto h-[50%] bg-contain rounded-lg block m-[0 auto]"
             src={questionmark}
             alt="enter city name"
           ></img>

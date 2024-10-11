@@ -6,7 +6,7 @@ import { useState } from 'react'
 export default function App() {
   const [weatherData, setWeatherData] = useState('initial')
   return (
-    <div className="flex flex-col h-full justify-between gap-2 items-center bg-[#BDE0FE]">
+    <div className="flex flex-col h-full justify-between items-center bg-[#BDE0FE]">
       <Header />
       <Card weatherData={weatherData} setWeatherData={setWeatherData} />
       <Footer weatherData={weatherData} />

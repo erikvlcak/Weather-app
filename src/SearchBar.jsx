@@ -39,7 +39,7 @@ export default function SearchBar({
           />
 
           {filteredCities.length > 0 && (
-            <Combobox.Options className="absolute z-10 mt-1 max-h-64 md:w-[50vw] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Combobox.Options className="absolute z-20 mt-1 max-h-64 w-[96%] md:w-[50vw] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {filteredCities.map((city) => (
                 <Combobox.Option
                   key={city.geoname_id}
