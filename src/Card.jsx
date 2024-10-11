@@ -331,7 +331,6 @@ function WeatherInfo({
                   <>
                     <div
                       key={item.condition}
-                      //className="flex flex-row justify-between border-2 bg-[#A2D2FF] rounded-lg md:p-3 md:m-3 p-3 m-1 cursor-pointer hover:bg-[#BDE0FE] transition-all"
                       className=" text-lg flex flex-row justify-between border-2 bg-[#77abff] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer md:hover:bg-[#67a0f4] md:transition-all md:before:ease md:relative md:overflow-hidden  text-white shadow-2xl  md:before:absolute md:before:right-0 md:before:top-0 md:before:h-12 md:before:w-6 md:before:translate-x-12 md:before:rotate-6 md:before:bg-white md:before:opacity-10 md:before:duration-1000 md:hover:shadow-[#77abff] md:hover:before:-translate-x-[45rem]"
                       onClick={() => handleUnitsChange(item.condition)}
                     >
