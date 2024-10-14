@@ -306,7 +306,7 @@ function WeatherInfo({
           </div>
         ) : (
           <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-3 gap-0 relative w-full max-w-[700px]">
-            <div className="flex gap-4 py-2 flex-row justify-around items-center md:flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:justify-center md:items-center">
+            <div className="flex gap-4 py-2 flex-col justify-around items-center md:flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:justify-center md:items-center">
               <div className="flex flex-row rounded-md shadow-md md:col-start-1 md:col-end-3 md:row-start-3 md:row-end-4 place-self-center mt-2 md:mt-0">
                 <button //today
                   onClick={() => {
@@ -348,19 +348,21 @@ function WeatherInfo({
                   {formatDate(weatherData.forecast.forecastday[2].date)}
                 </button>
               </div>
-              <div>{showProperForecastTime(forecastDate)}</div>
-              <div className="md:text-4xl text-2xl font-bold ">
-                {cityName.toUpperCase()}, {weatherData.location.country}
-              </div>
-              <div className="md:text-xl text font-bold">
-                {weatherData.current.condition.text}
+              <div className="flex flex-col justify-evenly items-center">
+                <div>{showProperForecastTime(forecastDate)}</div>
+                <div className="md:text-4xl text-2xl font-bold ">
+                  {cityName}
+                </div>
+                <div className="md:text-xl text font-bold">
+                  {weatherData.current.condition.text}
+                </div>
               </div>
             </div>
 
             <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3 md:place-self-center md:select-none w-full">
               <p className="text-center hidden md:flex md:justify-end md:pr-3">
                 <button
-                  className="border-2 border-black p-1 rounded-md self-end bg-[#e16d99] text-white md:hover:bg-[#FFAFCC] transition-all"
+                  className="border-3 border-white p-1 rounded-md self-end bg-[#e16d99] text-white md:hover:bg-[#FFAFCC] transition-all"
                   onClick={handleUnitsChange}
                 >
                   Change units
