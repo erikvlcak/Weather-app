@@ -251,34 +251,27 @@ function WeatherInfo({
     return `./${icon}.svg`
   }
 
-  function handleUnitsChange(clickedCondition) {
+  function handleUnitsChange() {
     setWeatherConditions((prevConditions) => {
       return prevConditions.map((item) => {
-        if (
-          item.condition === clickedCondition &&
-          item.condition !== 'Humidity'
-        ) {
-          if (item.units_primary.display) {
-            return {
-              ...item,
-              units_primary: {
-                ...item.units_primary,
-                display: false,
-              },
-              units_secondary: { ...item.units_secondary, display: true },
-            }
-          } else {
-            return {
-              ...item,
-              units_primary: {
-                ...item.units_primary,
-                display: true,
-              },
-              units_secondary: { ...item.units_secondary, display: false },
-            }
+        if (item.units_primary.display) {
+          return {
+            ...item,
+            units_primary: {
+              ...item.units_primary,
+              display: false,
+            },
+            units_secondary: { ...item.units_secondary, display: true },
           }
         } else {
-          return item
+          return {
+            ...item,
+            units_primary: {
+              ...item.units_primary,
+              display: true,
+            },
+            units_secondary: { ...item.units_secondary, display: false },
+          }
         }
       })
     })
@@ -313,6 +306,47 @@ function WeatherInfo({
         ) : (
           <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-3 gap-0 relative w-full max-w-[700px]">
             <div className="flex gap-4 py-2 flex-row justify-around items-center md:flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:justify-center md:items-center">
+              <div className="flex flex-row rounded-md shadow-md md:col-start-1 md:col-end-3 md:row-start-3 md:row-end-4 place-self-center mt-2 md:mt-0">
+                <button //today
+                  onClick={() => {
+                    setForecastDate(0)
+
+                    getWeatherConditions(weatherData, 0)
+                  }}
+                  type="button"
+                  className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
+                    forecastDate === 0 && 'bg-[#e16d99] text-white'
+                  }`}
+                >
+                  Today
+                </button>
+                <button //tomorrow
+                  onClick={() => {
+                    setForecastDate(1)
+
+                    getWeatherConditions(weatherData, 1)
+                  }}
+                  type="button"
+                  className={`relative -ml-px inline-flex items-center p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
+                    forecastDate === 1 && 'bg-[#e16d99] text-white'
+                  }`}
+                >
+                  {formatDate(weatherData.forecast.forecastday[1].date)}
+                </button>
+                <button //overtomorrow
+                  onClick={() => {
+                    setForecastDate(2)
+
+                    getWeatherConditions(weatherData, 2)
+                  }}
+                  type="button"
+                  className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
+                    forecastDate === 2 && 'bg-[#e16d99] text-white'
+                  }`}
+                >
+                  {formatDate(weatherData.forecast.forecastday[2].date)}
+                </button>
+              </div>
               <div>{showProperForecastTime(forecastDate)}</div>
               <div className="md:text-4xl text-2xl font-bold ">
                 {cityName.toUpperCase()}
@@ -323,8 +357,13 @@ function WeatherInfo({
             </div>
 
             <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3 md:place-self-center md:select-none w-full">
-              <p className="text-center hidden md:block">
-                Click on condition to change units
+              <p className="text-center hidden md:flex md:justify-end md:pr-3">
+                <button
+                  className="border-2 border-black p-1 rounded-md self-end bg-[#e16d99] text-white md:hover:bg-[#FFAFCC] transition-all"
+                  onClick={handleUnitsChange}
+                >
+                  Change units
+                </button>
               </p>
               {weatherConditions.map((item) => {
                 return (
@@ -332,7 +371,6 @@ function WeatherInfo({
                     <div
                       key={item.condition}
                       className=" text-lg flex flex-row justify-between border-2 bg-[#77abff] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer md:hover:bg-[#67a0f4] md:transition-all md:before:ease md:relative md:overflow-hidden  text-white shadow-2xl  md:before:absolute md:before:right-0 md:before:top-0 md:before:h-12 md:before:w-6 md:before:translate-x-12 md:before:rotate-6 md:before:bg-white md:before:opacity-10 md:before:duration-1000 md:hover:shadow-[#77abff] md:hover:before:-translate-x-[45rem]"
-                      onClick={() => handleUnitsChange(item.condition)}
                     >
                       <div>{item.condition}:</div>
                       {item.units_primary.display ? (
@@ -358,48 +396,6 @@ function WeatherInfo({
                   className="md:w-full md:h-full hidden md:block"
                 />
               )}
-            </div>
-
-            <div className="flex flex-row rounded-md shadow-xl md:col-start-1 md:col-end-3 md:row-start-3 md:row-end-4 place-self-center mt-2 md:mt-0">
-              <button //today
-                onClick={() => {
-                  setForecastDate(0)
-
-                  getWeatherConditions(weatherData, 0)
-                }}
-                type="button"
-                className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
-                  forecastDate === 0 && 'bg-pink-300 text-white'
-                }`}
-              >
-                Today
-              </button>
-              <button //tomorrow
-                onClick={() => {
-                  setForecastDate(1)
-
-                  getWeatherConditions(weatherData, 1)
-                }}
-                type="button"
-                className={`relative -ml-px inline-flex items-center p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
-                  forecastDate === 1 && 'bg-pink-300 text-white'
-                }`}
-              >
-                {formatDate(weatherData.forecast.forecastday[1].date)}
-              </button>
-              <button //overtomorrow
-                onClick={() => {
-                  setForecastDate(2)
-
-                  getWeatherConditions(weatherData, 2)
-                }}
-                type="button"
-                className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
-                  forecastDate === 2 && 'bg-pink-300 text-white'
-                }`}
-              >
-                {formatDate(weatherData.forecast.forecastday[2].date)}
-              </button>
             </div>
           </div>
         )
