@@ -23,8 +23,17 @@ export default function SearchBar({
     <div className="w-full">
       <Combobox
         as="div"
-        value={query.length > 0 ? selectedCity : ''}
-        onChange={setSelectedCity}
+        value={selectedCity}
+        onChange={(value) => {
+          const selectedCityData = suggestions.find(
+            (city) => city.geoname_id === value
+          )
+          setSelectedCity(
+            selectedCityData
+              ? `${selectedCityData.name}, ${selectedCityData.country}`
+              : ''
+          )
+        }}
       >
         <Combobox.Input
           placeholder="Enter city name..."
@@ -33,7 +42,14 @@ export default function SearchBar({
             setQuery(event.target.value)
             refreshSuggestions()
           }}
-          displayValue={(selectedCity) => selectedCity}
+          displayValue={(selectedCity) => {
+            const selectedCityData = suggestions.find(
+              (city) => city.name === selectedCity
+            )
+            return selectedCityData
+              ? `${selectedCityData.name}, ${selectedCityData.country}`
+              : selectedCity
+          }}
           onBlur={() => refreshSuggestions()}
         />
 
@@ -42,7 +58,7 @@ export default function SearchBar({
             {filteredCities.map((city) => (
               <Combobox.Option
                 key={city.geoname_id}
-                value={city.name}
+                value={city.geoname_id}
                 className={({ active }) =>
                   classNames(
                     'relative cursor-default select-none py-3 px-4 text-xl',

@@ -47,7 +47,7 @@ export default function Card({ weatherData, setWeatherData }) {
         },
       },
       {
-        condition: forecastDate === 0 ? 'Feels like' : 'Max / Min temperature',
+        condition: forecastDate === 0 ? 'Feels like' : 'Max / Min temp.',
         units_primary: {
           display: true,
           value:
@@ -157,6 +157,7 @@ export default function Card({ weatherData, setWeatherData }) {
       } else {
         setWeatherData(data)
         getWeatherConditions(data, forecastDate)
+        console.log(data)
       }
     } catch (error) {
       console.error(error)
@@ -349,7 +350,7 @@ function WeatherInfo({
               </div>
               <div>{showProperForecastTime(forecastDate)}</div>
               <div className="md:text-4xl text-2xl font-bold ">
-                {cityName.toUpperCase()}
+                {cityName.toUpperCase()}, {weatherData.location.country}
               </div>
               <div className="md:text-xl text font-bold">
                 {weatherData.current.condition.text}
