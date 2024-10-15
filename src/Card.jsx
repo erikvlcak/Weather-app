@@ -305,7 +305,7 @@ function WeatherInfo({
             ></img>
           </div>
         ) : (
-          <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#FFAFCC] p-3 gap-0 relative w-full max-w-[700px]">
+          <div className="flex flex-col justify-center items-stretch md:grid md:grid-cols-[repeat(2,_minmax(0,_1fr))] bg-white rounded-3xl shadow-xl border-4 border-[#9C1347] p-3 gap-0 relative w-full max-w-[700px]">
             <div className="flex gap-4 py-2 flex-col justify-around items-center md:flex-col md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:justify-center md:items-center">
               <div className="flex flex-row rounded-md shadow-md md:col-start-1 md:col-end-3 md:row-start-3 md:row-end-4 place-self-center mt-2 md:mt-0">
                 <button //today
@@ -316,7 +316,8 @@ function WeatherInfo({
                   }}
                   type="button"
                   className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
-                    forecastDate === 0 && 'bg-[#9C1347] text-white'
+                    forecastDate === 0 &&
+                    'bg-[#9C1347] text-white md:hover:bg-[#d25a88] transition-all'
                   }`}
                 >
                   Today
@@ -329,7 +330,8 @@ function WeatherInfo({
                   }}
                   type="button"
                   className={`relative -ml-px inline-flex items-center p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
-                    forecastDate === 1 && 'bg-[#9C1347] text-white'
+                    forecastDate === 1 &&
+                    'bg-[#9C1347] text-white md:hover:bg-[#d25a88] transition-all'
                   }`}
                 >
                   {formatDate(weatherData.forecast.forecastday[1].date)}
@@ -342,7 +344,8 @@ function WeatherInfo({
                   }}
                   type="button"
                   className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
-                    forecastDate === 2 && 'bg-[#9C1347] text-white'
+                    forecastDate === 2 &&
+                    'bg-[#9C1347] text-white md:hover:bg-[#d25a88] transition-all'
                   }`}
                 >
                   {formatDate(weatherData.forecast.forecastday[2].date)}
@@ -362,7 +365,7 @@ function WeatherInfo({
             <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3 md:place-self-center md:select-none w-full">
               <p className="text-center hidden md:flex md:justify-end md:pr-3">
                 <button
-                  className="border-3 border-white p-1 rounded-md self-end bg-[#9C1347] text-white md:hover:bg-[#FFAFCC] transition-all"
+                  className="border-3 border-white p-2 rounded-md self-end bg-[#9C1347] text-white md:hover:bg-[#d25a88] transition-all"
                   onClick={handleUnitsChange}
                 >
                   Change units
@@ -373,7 +376,7 @@ function WeatherInfo({
                   <>
                     <div
                       key={item.condition}
-                      className=" text-lg flex flex-row justify-between border-2 bg-[#77abff] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer md:hover:bg-[#67a0f4] md:transition-all md:before:ease md:relative md:overflow-hidden  text-white shadow-2xl  md:before:absolute md:before:right-0 md:before:top-0 md:before:h-12 md:before:w-6 md:before:translate-x-12 md:before:rotate-6 md:before:bg-white md:before:opacity-10 md:before:duration-1000 md:hover:shadow-[#77abff] md:hover:before:-translate-x-[45rem]"
+                      className=" text-lg flex flex-row justify-between border-2 bg-[#214E97] rounded-lg md:p-2 md:m-3 p-3 m-1 cursor-pointer md:hover:bg-[#2860BA] md:transition-all md:before:ease md:relative md:overflow-hidden  text-white shadow-2xl  md:before:absolute md:before:right-0 md:before:top-0 md:before:h-12 md:before:w-6 md:before:translate-x-12 md:before:rotate-6 md:before:bg-white md:before:opacity-10 md:before:duration-1000 md:hover:shadow-[#77abff] md:hover:before:-translate-x-[45rem]"
                     >
                       <div>{item.condition}:</div>
                       {item.units_primary.display ? (
