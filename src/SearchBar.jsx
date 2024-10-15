@@ -37,7 +37,7 @@ export default function SearchBar({
       >
         <Combobox.Input
           placeholder="Enter city name..."
-          className="w-full md:w-[50vw] h-full placeholder-grey rounded-xl border-0 text-2xl bg-pink-50 py-3 pl-3 text-black font-bold shadow-sm ring-4 ring-inset ring-[#FFAFCC] focus:ring-4 focus:ring-inset focus:ring-white"
+          className="w-full md:w-[50vw] h-full placeholder-grey rounded-xl border-0 text-2xl bg-pink-50 py-3 pl-3 text-black font-bold shadow-sm ring-4 ring-inset ring-[#9C1347] focus:ring-4 focus:ring-inset focus:ring-white"
           onChange={(event) => {
             setQuery(event.target.value)
             refreshSuggestions()
@@ -62,7 +62,7 @@ export default function SearchBar({
                 className={({ active }) =>
                   classNames(
                     'relative cursor-default select-none py-3 px-4 text-xl',
-                    active ? 'bg-[#FFAFCC] text-white' : 'text-gray-900'
+                    active ? 'bg-[#9C1347] text-white' : 'text-gray-900'
                   )
                 }
               >

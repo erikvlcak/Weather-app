@@ -316,7 +316,7 @@ function WeatherInfo({
                   }}
                   type="button"
                   className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tl-md rounded-bl-md focus:z-10 ${
-                    forecastDate === 0 && 'bg-[#e16d99] text-white'
+                    forecastDate === 0 && 'bg-[#9C1347] text-white'
                   }`}
                 >
                   Today
@@ -329,7 +329,7 @@ function WeatherInfo({
                   }}
                   type="button"
                   className={`relative -ml-px inline-flex items-center p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10 ${
-                    forecastDate === 1 && 'bg-[#e16d99] text-white'
+                    forecastDate === 1 && 'bg-[#9C1347] text-white'
                   }`}
                 >
                   {formatDate(weatherData.forecast.forecastday[1].date)}
@@ -342,7 +342,7 @@ function WeatherInfo({
                   }}
                   type="button"
                   className={`relative -ml-px inline-flex items-center  p-4 text-md font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 rounded-tr-md rounded-br-md focus:z-10 ${
-                    forecastDate === 2 && 'bg-[#e16d99] text-white'
+                    forecastDate === 2 && 'bg-[#9C1347] text-white'
                   }`}
                 >
                   {formatDate(weatherData.forecast.forecastday[2].date)}
@@ -362,7 +362,7 @@ function WeatherInfo({
             <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3 md:place-self-center md:select-none w-full">
               <p className="text-center hidden md:flex md:justify-end md:pr-3">
                 <button
-                  className="border-3 border-white p-1 rounded-md self-end bg-[#e16d99] text-white md:hover:bg-[#FFAFCC] transition-all"
+                  className="border-3 border-white p-1 rounded-md self-end bg-[#9C1347] text-white md:hover:bg-[#FFAFCC] transition-all"
                   onClick={handleUnitsChange}
                 >
                   Change units
